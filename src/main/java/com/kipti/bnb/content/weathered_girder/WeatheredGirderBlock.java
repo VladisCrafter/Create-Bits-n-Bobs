@@ -5,8 +5,9 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.girder.GirderBlock;
 import com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock;
-import com.simibubi.create.content.decoration.girder.GirderWrenchBehavior;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.logistics.chute.AbstractChuteBlock;
+import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlock;
 import net.createmod.catnip.placement.IPlacementHelper;
 import net.createmod.catnip.placement.PlacementHelpers;
 import net.minecraft.core.BlockPos;
@@ -18,9 +19,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
@@ -32,7 +36,9 @@ public class WeatheredGirderBlock extends GirderBlock {
         super(p_49795_);
     }
 
-    /**Redirecting to weathered girder handling*/
+    /**
+     * Redirecting to weathered girder handling
+     */
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
                                  BlockHitResult pHit) {
@@ -71,4 +77,30 @@ public class WeatheredGirderBlock extends GirderBlock {
 
         return InteractionResult.PASS;
     }
+
+    public static boolean isConnected(BlockAndTintGetter world, BlockPos pos, BlockState state, Direction side) {
+        Direction.Axis axis = side.getAxis();
+        if (state.getBlock() instanceof WeatheredGirderBlock && !state.getValue(axis == Direction.Axis.X ? X : Z))
+            return false;
+        if (state.getBlock() instanceof WeatheredGirderEncasedShaftBlock
+                && state.getValue(WeatheredGirderEncasedShaftBlock.HORIZONTAL_AXIS) == axis)
+            return false;
+        BlockPos relative = pos.relative(side);
+        BlockState blockState = world.getBlockState(relative);
+        if (blockState.isAir())
+            return false;
+        if (blockState.getBlock() instanceof NixieTubeBlock && NixieTubeBlock.getFacing(blockState) == side)
+            return true;
+        if (isFacingBracket(world, pos, side))
+            return true;
+        if (blockState.getBlock() instanceof PlacardBlock && PlacardBlock.connectedDirection(blockState) == side)
+            return true;
+        VoxelShape shape = blockState.getShape(world, relative);
+        if (shape.isEmpty())
+            return false;
+        if (Block.isFaceFull(shape, side.getOpposite()) && blockState.isSolid())
+            return true;
+        return AbstractChuteBlock.getChuteFacing(blockState) == Direction.DOWN;
+    }
+
 }
