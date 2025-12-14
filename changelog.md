@@ -70,4 +70,10 @@
 - Note that this version is slightly behind the 1.21.1 version, it will updated over time
 # 1.20.1-0.0.22
 - Fixed recipes x_X
-- 
+- Edits carried from 0.0.19-0.0.22:
+  - Full spanish localization
+  - Finished the flywheel bearing tooltip
+  - Fixed crash related to chains
+  - Weathered girder vertical CT
+  - Fixed small flanged cogwheel not getting ponder
+  - Fixed chairs not rotating when disassembled
