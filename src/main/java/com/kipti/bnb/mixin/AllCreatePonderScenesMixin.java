@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(AllCreatePonderScenes.class)
+@Mixin(value = AllCreatePonderScenes.class, remap = false)
 public class AllCreatePonderScenesMixin {
 
     @Inject(method = "register", at = @At("TAIL"))

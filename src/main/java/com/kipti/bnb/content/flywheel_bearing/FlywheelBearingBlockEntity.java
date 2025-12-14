@@ -78,7 +78,7 @@ public class FlywheelBearingBlockEntity extends GeneratingKineticBlockEntity imp
     }
 
     @Override
-    public void write(final CompoundTag compound, final HolderLookup.Provider registries, final boolean clientPacket) {
+    public void write(final CompoundTag compound, final boolean clientPacket) {
         compound.putBoolean("Running", running);
 
         compound.putFloat("NetworkFlywheelAbsorptionCapacity", hasNetwork() ? getOrCreateFlywheelNetwork().bits_n_bobs$getFlywheelStressAbsoptionCapacity() : 0);
@@ -87,14 +87,14 @@ public class FlywheelBearingBlockEntity extends GeneratingKineticBlockEntity imp
         compound.putInt("LastGeneratorDirection", lastGeneratorDirection);
 
         flywheelMovement.writeAdditional(compound);
-        AssemblyException.write(compound, registries, lastException);
-        super.write(compound, registries, clientPacket);
+        AssemblyException.write(compound, lastException);
+        super.write(compound, clientPacket);
     }
 
     @Override
-    protected void read(final CompoundTag compound, final HolderLookup.Provider registries, final boolean clientPacket) {
+    protected void read(final CompoundTag compound, final boolean clientPacket) {
         if (wasMoved) {
-            super.read(compound, registries, clientPacket);
+            super.read(compound, clientPacket);
             return;
         }
 
@@ -107,8 +107,8 @@ public class FlywheelBearingBlockEntity extends GeneratingKineticBlockEntity imp
         running = compound.getBoolean("Running");
         lastGeneratorDirection = compound.getInt("LastGeneratorDirection");
         flywheelMovement.readAdditional(compound);
-        lastException = AssemblyException.read(compound, registries);
-        super.read(compound, registries, clientPacket);
+        lastException = AssemblyException.read(compound);
+        super.read(compound, clientPacket);
         if (!clientPacket)
             return;
         if (!running) {

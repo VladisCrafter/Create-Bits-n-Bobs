@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class BnbBaseCreatePonderScenes {
 
     public static void register(final PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        final PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        final PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
         HELPER.forComponents(BnbBlocks.NIXIE_BOARD, BnbBlocks.LARGE_NIXIE_TUBE)
                 .addStoryBoard("nixie_tube", RedstoneScenes::nixieTube);

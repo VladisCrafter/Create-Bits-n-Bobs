@@ -1,33 +1,43 @@
 package com.kipti.bnb.network.packets.from_client;
 
 import com.kipti.bnb.content.cogwheel_chain.graph.*;
-import com.kipti.bnb.network.BnbPackets;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorBlockEntity;
-import net.createmod.catnip.net.base.ServerboundPacketPayload;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.simibubi.create.foundation.networking.SimplePacketBase;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record PlaceCogwheelChainPacket(
-        PlacingCogwheelChain worldSpacePartialChain,
-        int priorityChainTakeHand
-) implements ServerboundPacketPayload {
+public class PlaceCogwheelChainPacket extends SimplePacketBase {
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PlaceCogwheelChainPacket> STREAM_CODEC =
-            StreamCodec.composite(
-                    PlacingCogwheelChain.STREAM_CODEC,
-                    PlaceCogwheelChainPacket::worldSpacePartialChain,
-                    ByteBufCodecs.INT,
-                    PlaceCogwheelChainPacket::priorityChainTakeHand,
-                    PlaceCogwheelChainPacket::new
-            );
+    PlacingCogwheelChain worldSpacePartialChain;
+    int priorityChainTakeHand;
+
+    public PlaceCogwheelChainPacket(PlacingCogwheelChain worldSpacePartialChain, int priorityChainTakeHand) {
+        this.worldSpacePartialChain = worldSpacePartialChain;
+        this.priorityChainTakeHand = priorityChainTakeHand;
+    }
+
+    public PlaceCogwheelChainPacket(FriendlyByteBuf buffer) {
+        this.worldSpacePartialChain = PlacingCogwheelChain.readFromBuffer(buffer);
+        this.priorityChainTakeHand = buffer.readInt();
+    }
 
     @Override
-    public void handle(ServerPlayer player) {
+    public boolean handle(NetworkEvent.Context context) {
+        context.enqueueWork(() -> {
+            ServerPlayer player = context.getSender();
+            MinecraftServer server = player.getServer();
+            handle(server, player);
+        });
+        return true;
+    }
+
+    public void handle(@Nullable MinecraftServer server, @Nullable ServerPlayer player) {
         //Server side validation of the chain
         if (worldSpacePartialChain.maxBounds() > PlacingCogwheelChain.MAX_CHAIN_BOUNDS)
             return;
@@ -37,10 +47,10 @@ public record PlaceCogwheelChainPacket(
 
         final int chainsRequired = worldSpacePartialChain.getChainsRequiredInLoop();
 
-        final boolean hasEnough = player.hasInfiniteMaterials() || ChainConveyorBlockEntity.getChainsFromInventory(player, Items.CHAIN.getDefaultInstance(), chainsRequired, true);
+        final boolean hasEnough = player.isCreative() || ChainConveyorBlockEntity.getChainsFromInventory(player, Items.CHAIN.getDefaultInstance(), chainsRequired, true);
         if (!hasEnough)
             return;
-        if (!player.hasInfiniteMaterials())
+        if (!player.isCreative())
             ChainConveyorBlockEntity.getChainsFromInventory(player, Items.CHAIN.getDefaultInstance(), chainsRequired, false);
 
         final List<PathedCogwheelNode> chainGeometry;
@@ -59,8 +69,9 @@ public record PlaceCogwheelChainPacket(
     }
 
     @Override
-    public PacketTypeProvider getTypeProvider() {
-        return BnbPackets.PLACE_COGWHEEL_CHAIN;
+    public void write(FriendlyByteBuf buffer) {
+        PlacingCogwheelChain.writeToBuffer(worldSpacePartialChain, buffer);
+        buffer.writeInt(priorityChainTakeHand);
     }
 
 }

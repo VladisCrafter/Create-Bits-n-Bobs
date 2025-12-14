@@ -56,7 +56,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
 
 import static com.kipti.bnb.CreateBitsnBobs.REGISTRATE;
 import static com.kipti.bnb.content.chair.ChairBlockStateGen.dyedChair;
@@ -376,21 +377,30 @@ public class BnbBlocks {
                 .transform(axeOnly())
                 .onRegister(movementBehaviour(movementBehaviour))
                 .onRegister(interactionBehaviour(interactionBehaviour))
-                .transform(displaySource(AllDisplaySources.ENTITY_NAME))
+//                .transform(displaySource(AllDisplaySources.ENTITY_NAME)) TODO: Fix maybe? it crashes from a registry issue which shouldnt be
 //            .onRegister(CreateRegistrate.blockModel(() -> ChairModelBuilder::new))
                 .blockstate(dyedChair(colourName))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .recipe((c, p) -> {
+
+                    ConditionalRecipe.Builder conditionalChairFromWoolRecipeBuilder = ConditionalRecipe.builder()
+                        .addCondition(BnbFeatureFlag.CHAIRS.getDataCondition());
                     ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
                             .requires(DyeHelper.getWoolOfDye(colour))
                             .requires(ItemTags.WOODEN_STAIRS)
                             .unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
-                            .save(p.withConditions(BnbFeatureFlag.CHAIRS.getDataCondition()), CreateBitsnBobs.asResource("crafting/" + c.getName()));
+                            .save(conditionalChairFromWoolRecipeBuilder::addRecipe, CreateBitsnBobs.asResource("crafting/" + c.getName()));
+                    conditionalChairFromWoolRecipeBuilder.build(p, CreateBitsnBobs.asResource("crafting/" + c.getName() + "_conditional"));
+
+
+                    ConditionalRecipe.Builder conditionalChairFromDyeBuilder = ConditionalRecipe.builder()
+                        .addCondition(BnbFeatureFlag.CHAIRS.getDataCondition());
                     ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
-                            .requires(colour.getTag())
-                            .requires(BnbTags.BnbItemTags.CHAIRS.tag)
-                            .unlockedBy("has_seat", RegistrateRecipeProvider.has(BnbTags.BnbItemTags.CHAIRS.tag))
-                            .save(p.withConditions((BnbFeatureFlag.CHAIRS.getDataCondition())), CreateBitsnBobs.asResource("crafting/" + c.getName() + "_from_other_chair"));
+                        .requires(colour.getTag())
+                        .requires(BnbTags.BnbItemTags.CHAIRS.tag)
+                        .unlockedBy("has_seat", RegistrateRecipeProvider.has(BnbTags.BnbItemTags.CHAIRS.tag))
+                        .save(conditionalChairFromDyeBuilder::addRecipe, CreateBitsnBobs.asResource("crafting/" + c.getName() + "_from_other_chair"));
+                    conditionalChairFromDyeBuilder.build(p, CreateBitsnBobs.asResource("crafting/" + c.getName() + "_from_other_chair"));
                 })
                 .onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.bits_n_bobs.chair"))
                 .tag(BnbTags.BnbBlockTags.CHAIRS.tag)

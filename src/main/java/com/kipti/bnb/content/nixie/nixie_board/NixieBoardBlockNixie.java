@@ -9,7 +9,7 @@ import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -48,7 +48,7 @@ public class NixieBoardBlockNixie extends GenericNixieDisplayBlock implements IB
     }
 
     @Override
-    public ItemStack getCloneItemStack(final BlockState state, final HitResult target, final LevelReader level, final BlockPos pos, final Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
         return BnbBlocks.NIXIE_BOARD.asItem().getDefaultInstance();
     }
 
@@ -77,7 +77,7 @@ public class NixieBoardBlockNixie extends GenericNixieDisplayBlock implements IB
     }
 
     @Override
-    protected BlockState updateShape(final BlockState state, final Direction direction, final BlockState neighborState, final LevelAccessor level, final BlockPos pos, final BlockPos neighborPos) {
+    public BlockState updateShape(final BlockState state, final Direction direction, final BlockState neighborState, final LevelAccessor level, final BlockPos pos, final BlockPos neighborPos) {
         final Direction left = DoubleOrientedDirections.getLeft(state);
         final Direction right = left.getOpposite();
         final Direction bottom = state.getValue(FACING).getOpposite();
@@ -96,35 +96,33 @@ public class NixieBoardBlockNixie extends GenericNixieDisplayBlock implements IB
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(final ItemStack stack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
-        final ItemStack heldItem = player.getItemInHand(hand);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult hitResult) {
+        final ItemStack heldItem = player.getItemInHand(interactionHand);
         if (heldItem.getItem() instanceof final DyeItem dyeItem && dyeItem.getDyeColor() != dyeColor) {
             if (!level.isClientSide) {
-                withBlockEntityDo(level, pos, be -> {
-                    be.applyToEachElementOfThisStructure((display) -> {
-                        final DyeColor newColor = dyeItem.getDyeColor();
-                        final BlockState newState = BnbBlocks.DYED_NIXIE_BOARD.get(newColor).getDefaultState()
-                                .setValue(FACING, display.getBlockState().getValue(FACING))
-                                .setValue(ORIENTATION, display.getBlockState().getValue(ORIENTATION))
-                                .setValue(LEFT, display.getBlockState().getValue(LEFT))
-                                .setValue(RIGHT, display.getBlockState().getValue(RIGHT))
-                                .setValue(BOTTOM, display.getBlockState().getValue(BOTTOM))
-                                .setValue(TOP, display.getBlockState().getValue(TOP))
-                                .setValue(LIT, display.getBlockState().getValue(LIT));
-                        level.setBlockAndUpdate(display.getBlockPos(), newState);
-                        final GenericNixieDisplayBlockEntity newBe = (GenericNixieDisplayBlockEntity) level.getBlockEntity(display.getBlockPos());
-                        if (newBe == null) return;
-                        newBe.inheritDataFrom(display);
-                    });
-                });
+                withBlockEntityDo(level, pos, be -> be.applyToEachElementOfThisStructure((display) -> {
+                    final DyeColor newColor = dyeItem.getDyeColor();
+                    final BlockState newState = BnbBlocks.DYED_NIXIE_BOARD.get(newColor).getDefaultState()
+                        .setValue(FACING, display.getBlockState().getValue(FACING))
+                        .setValue(ORIENTATION, display.getBlockState().getValue(ORIENTATION))
+                        .setValue(LEFT, display.getBlockState().getValue(LEFT))
+                        .setValue(RIGHT, display.getBlockState().getValue(RIGHT))
+                        .setValue(BOTTOM, display.getBlockState().getValue(BOTTOM))
+                        .setValue(TOP, display.getBlockState().getValue(TOP))
+                        .setValue(LIT, display.getBlockState().getValue(LIT));
+                    level.setBlockAndUpdate(display.getBlockPos(), newState);
+                    final GenericNixieDisplayBlockEntity newBe = (GenericNixieDisplayBlockEntity) level.getBlockEntity(display.getBlockPos());
+                    if (newBe == null) return;
+                    newBe.inheritDataFrom(display);
+                }));
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        return super.use(state, level, pos, player, interactionHand, hitResult);
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
+    public @NotNull VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
         final Direction frontTarget = DoubleOrientedDirections.getFront(state.getValue(FACING), state.getValue(ORIENTATION));
         final boolean isFront = frontTarget.getAxis() == state.getValue(ORIENTATION).getAxis();
         return isFront ? BnbShapes.NIXIE_BOARD_SIDE.get(state.getValue(FACING))

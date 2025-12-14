@@ -31,7 +31,7 @@ public class GenericNixieDisplayTarget extends DisplayTarget {
     @Override
     public void acceptText(int line, final List<MutableComponent> text, final DisplayLinkContext context) {
         for (final MutableComponent lineComponent : text) {
-            final String tagElement = Component.Serializer.toJson(lineComponent, context.level().registryAccess());
+            final String tagElement = Component.Serializer.toJson(lineComponent);
             final int finalLine = line;
             GenericNixieDisplayTarget.walkNixies(context.level(), context.getTargetPos(), (nixiePos, consumedWidth, nixieBE) -> {
                 nixieBE.displayCustomText(tagElement, consumedWidth, finalLine);

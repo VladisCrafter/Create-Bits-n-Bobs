@@ -172,8 +172,8 @@ public class HeadlampBlockEntity extends SmartBlockEntity implements SpecialBloc
     }
 
     @Override
-    protected void read(final CompoundTag tag, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
+    protected void read(final CompoundTag tag, final boolean clientPacket) {
+        super.read(tag, clientPacket);
         if (!tag.contains("activePlacements", 11)) {
             return;
         }
@@ -189,8 +189,8 @@ public class HeadlampBlockEntity extends SmartBlockEntity implements SpecialBloc
     }
 
     @Override
-    protected void write(final CompoundTag tag, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(final CompoundTag tag, final boolean clientPacket) {
+        super.write(tag, clientPacket);
         tag.putIntArray("activePlacements", activePlacements);
     }
 

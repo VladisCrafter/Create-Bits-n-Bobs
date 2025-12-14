@@ -91,14 +91,14 @@ public class GirderStrutBlock extends Block implements IBE<GirderStrutBlockEntit
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(final @NotNull Level level, final @NotNull BlockPos pos, final @NotNull BlockState state, final Player player) {
-        final boolean shouldPreventDrops = player.hasInfiniteMaterials();
+    public void playerWillDestroy(final @NotNull Level level, final @NotNull BlockPos pos, final @NotNull BlockState state, final Player player) {
+        final boolean shouldPreventDrops = player.isCreative();
 
         if (shouldPreventDrops && !level.isClientSide) {
             destroyConnectedStrut(level, pos, false);
         }
 
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     private void destroyConnectedStrut(final Level level, final BlockPos pos, final boolean dropBlock) {

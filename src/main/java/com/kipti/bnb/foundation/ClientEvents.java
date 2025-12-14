@@ -9,25 +9,29 @@ import net.createmod.catnip.lang.FontHelper;
 import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientEvents {
 
     static final List<Pair<Vec3, Vec3>> deferredDebugRenderOutlines = Collections.synchronizedList(new ArrayList<>());
 
     @SubscribeEvent
-    public static void onTickPost(final ClientTickEvent.Post event) {
+    public static void onTickPost(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END)
+            return;
+
         WeatheredGirderWrenchBehaviour.tick();
 
         //Render deferred debug outlines
@@ -52,7 +56,9 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onTickPre(final ClientTickEvent.Pre event) {
+    public static void onTickPre(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START)
+            return;
         //If in a level, there is a player, and the player is holding a girder strut block item, update the preview
         final Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && mc.player != null) {
@@ -61,7 +67,9 @@ public class ClientEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onTickPre(final ClientTickEvent.Post event) {
+    public static void onTickPostLow(final TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END)
+            return;
         final Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && mc.player != null) {
             CogwheelChainPlacementEffect.tick(mc.player);
@@ -73,7 +81,7 @@ public class ClientEvents {
         if (context.getItemStack().is(AllBlocks.COGWHEEL.asItem()) ||
                 context.getItemStack().is(AllBlocks.LARGE_COGWHEEL.asItem())) {
             context.getToolTip().add(1, Component.translatable("tooltip.bits_n_bobs.new_ponder_notification")
-                    .withColor(FontHelper.Palette.STANDARD_CREATE.primary().getColor().getValue()));
+                .withStyle(FontHelper.Palette.STANDARD_CREATE.primary()));
         }
     }
 

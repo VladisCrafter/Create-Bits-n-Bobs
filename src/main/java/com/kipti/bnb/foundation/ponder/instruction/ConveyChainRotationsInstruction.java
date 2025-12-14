@@ -76,10 +76,9 @@ public class ConveyChainRotationsInstruction extends PonderInstruction {
     }
 
     private void modifyBlockEntityKineticRotation(final Level level, final CogwheelChainBlockEntity childCogwheelChainBlockEntity, final float initialFactor, final float factor, final float rpm) {
-        final CompoundTag tag = childCogwheelChainBlockEntity.saveWithFullMetadata(level.registryAccess());
+        final CompoundTag tag = childCogwheelChainBlockEntity.saveWithFullMetadata();
         tag.putFloat("Speed", rpm * initialFactor / factor);
-        childCogwheelChainBlockEntity.loadWithComponents(tag, level.registryAccess());
-
+        childCogwheelChainBlockEntity.load(tag);
     }
 
     @Override

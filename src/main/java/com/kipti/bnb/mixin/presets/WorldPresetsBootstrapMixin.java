@@ -9,7 +9,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.DebugLevelSource;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +34,7 @@ public abstract class WorldPresetsBootstrapMixin {
 
     @Inject(method = "bootstrap", at = @At("TAIL"))
     private void onBootstrap(final CallbackInfo ci) {
-        final Holder.Reference<Biome> plains = biomes.getOrThrow(Biomes.PLAINS);
+        final Holder.Reference<Biome> plains = biomes.getOrThrow(Biomes.THE_VOID);
         this.registerCustomOverworldPreset(BnbWorldPresets.PONDER, this.makeOverworld(new PonderLevelSource(plains)));
     }
 

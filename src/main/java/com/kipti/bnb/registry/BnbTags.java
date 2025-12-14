@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 
 public class BnbTags {
 
@@ -81,7 +81,7 @@ public class BnbTags {
                     .add(AllBlocks.INDUSTRIAL_IRON_BLOCK.getKey());
 
             prov.addTag(BnbBlockTags.HEAVY.tag)
-                    .addTag(Tags.Blocks.STONES);
+                    .addTag(Tags.Blocks.STONE);
 
             prov.addTag(BnbBlockTags.LIGHT.tag)
                     .addOptionalTag(AllTags.AllBlockTags.BRITTLE.tag)

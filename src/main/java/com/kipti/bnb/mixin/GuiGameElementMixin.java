@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Fix manual item application not accounting for block entities (the rope pulley) by attaching a rope pulley.
  */
-@Mixin(GuiGameElement.class)
+@Mixin(value = GuiGameElement.class, remap = false)
 public class GuiGameElementMixin {
 
     @Inject(method = "of(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/createmod/catnip/gui/element/GuiGameElement$GuiRenderBuilder;", at = @At("HEAD"), cancellable = true)

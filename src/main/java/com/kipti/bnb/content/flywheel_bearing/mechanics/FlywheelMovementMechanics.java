@@ -71,7 +71,7 @@ public class FlywheelMovementMechanics {
         final boolean canProvideStressBefore = canProvideStress();
 
         final float maxTransferCapacity = getMaxTransferCapacity();
-        final float availableExcessKineticStrength = Math.clamp(be.getFlywheelStressDelta(), -maxTransferCapacity, maxTransferCapacity);
+        final float availableExcessKineticStrength = Math.min(Math.max(be.getFlywheelStressDelta(), -maxTransferCapacity), maxTransferCapacity);
         final float kejEnergyChange = availableExcessKineticStrength / getActualStressUnitsPerKeJoule();
         final float currentKejEnergy = 0.5f * angularMass * angularVelocity * angularVelocity;
         final float newKejEnergy = Math.max(currentKejEnergy + kejEnergyChange, 0);
@@ -119,7 +119,7 @@ public class FlywheelMovementMechanics {
         final float displayAngle = level != null && level.isClientSide && clientAngle != null ? clientAngle : angle;
         prevClientAngle = displayAngle;
         final float targetAngularVelocity = be.getSpeed() * 360 / (20f * 60f);
-        final float reactivity = Math.clamp(1f / angularMass, 0.005f, 1f);
+        final float reactivity = Math.min(Math.max(1f / angularMass, 0.005f), 1f);
         angularVelocity = targetAngularVelocity * reactivity + angularVelocity * (1 - reactivity);
         angle += angularVelocity;
         clientAngle = Mth.lerp(0.1f, displayAngle + angularVelocity, angle);

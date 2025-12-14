@@ -90,14 +90,14 @@ public class GirderStrutBlockEntityRenderer extends SmartBlockEntityRenderer<Gir
                         .flatMap(c -> GirderStrutModelManipulator.bakeConnectionToConsumer(c, modelType, blockEntity.createLighter()).stream())
                         .toList();
 
-                BufferBuilder builder = new BufferBuilder(new ByteBufferBuilder(256), VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+                BufferBuilder builder = new BufferBuilder(256);
+                builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
 
                 for (Consumer<BufferBuilder> quad : quads) {
                     quad.accept(builder);
                 }
-                MeshData meshData = builder.build();
 
-                if (meshData == null) return;
+                BufferBuilder.RenderedBuffer meshData = builder.end();
 
                 blockEntity.connectionRenderBufferCache = SuperBufferFactory.getInstance().create(meshData);
             }
@@ -124,11 +124,6 @@ public class GirderStrutBlockEntityRenderer extends SmartBlockEntityRenderer<Gir
      */
     protected int getRenderPriority(Vec3i relative) {
         return relative.getY() * 10000 + relative.getX() * 100 + relative.getZ();
-    }
-
-    @Override
-    public @NotNull AABB getRenderBoundingBox(@NotNull GirderStrutBlockEntity blockEntity) {
-        return super.getRenderBoundingBox(blockEntity).inflate(10);
     }
 
     @Override

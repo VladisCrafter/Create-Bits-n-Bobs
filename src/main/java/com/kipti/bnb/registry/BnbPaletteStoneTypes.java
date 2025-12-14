@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Function;
 
@@ -80,7 +81,7 @@ public enum BnbPaletteStoneTypes {
             paletteStoneVariants.baseBlock = paletteStoneVariants.factory.apply(registrate);
             final String id = Lang.asId(paletteStoneVariants.name());
             paletteStoneVariants.materialTag =
-                    AllTags.optionalTag(BuiltInRegistries.ITEM, Create.asResource("stone_types/" + id));
+                    AllTags.optionalTag(ForgeRegistries.ITEMS, Create.asResource("stone_types/" + id));
             paletteStoneVariants.variants = new BnbPalettesVariantEntry(id, paletteStoneVariants);
         }
     }

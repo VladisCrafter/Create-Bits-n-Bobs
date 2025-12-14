@@ -154,19 +154,19 @@ public class GenericNixieDisplayBlockEntity extends SmartBlockEntity {
     }
 
     @Override
-    protected void write(final CompoundTag tag, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(final CompoundTag tag, final boolean clientPacket) {
+        super.write(tag, clientPacket);
 
         if (customTextTop.isPresent()) {
             final CompoundTag componentTag = new CompoundTag();
             customTextTop.get()
-                    .write(componentTag, registries);
+                    .write(componentTag);
             tag.put("CustomTextComponentTop", componentTag);
         }
         if (customTextBottom.isPresent()) {
             final CompoundTag componentTag = new CompoundTag();
             customTextBottom.get()
-                    .write(componentTag, registries);
+                    .write(componentTag);
             tag.put("CustomTextComponentBottom", componentTag);
         }
 
@@ -175,20 +175,20 @@ public class GenericNixieDisplayBlockEntity extends SmartBlockEntity {
     }
 
     @Override
-    protected void read(final CompoundTag tag, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
+    protected void read(final CompoundTag tag, final boolean clientPacket) {
+        super.read(tag, clientPacket);
 
         if (tag.contains("CustomTextComponentTop")) {
             final DynamicComponent component = customTextTop.orElseGet(DynamicComponent::new);
             final CompoundTag componentTag = tag.getCompound("CustomTextComponentTop");
-            component.read(worldPosition, componentTag, registries);
+            component.read(level, worldPosition, componentTag);
             customTextTop = Optional.of(component);
         }
 
         if (tag.contains("CustomTextComponentBottom")) {
             final DynamicComponent component = customTextBottom.orElseGet(DynamicComponent::new);
             final CompoundTag componentTag = tag.getCompound("CustomTextComponentBottom");
-            component.read(worldPosition, componentTag, registries);
+            component.read(level, worldPosition, componentTag);
             customTextBottom = Optional.of(component);
         }
 
@@ -210,7 +210,7 @@ public class GenericNixieDisplayBlockEntity extends SmartBlockEntity {
             if (!oldTextTop.isEmpty()) {
                 final EndClipping clipping = getEndClipping();
                 final DynamicComponent component = new DynamicComponent();
-                ((DynamicComponentMigrator) component).bits_n_bobs$setValueToLiteral(oldTextTop, registries);
+                ((DynamicComponentMigrator) component).bits_n_bobs$setValueToLiteral(oldTextTop);
                 customTextTop = Optional.of(component);
                 customTextStart = clipping.left;
             } else {
@@ -224,7 +224,7 @@ public class GenericNixieDisplayBlockEntity extends SmartBlockEntity {
             final String oldTextBottom = tag.getString("CurrentTextBottom");
             if (!oldTextBottom.isEmpty()) {
                 final DynamicComponent component = new DynamicComponent();
-                ((DynamicComponentMigrator) component).bits_n_bobs$setValueToLiteral(oldTextBottom, registries);
+                ((DynamicComponentMigrator) component).bits_n_bobs$setValueToLiteral(oldTextBottom);
                 customTextBottom = Optional.of(component);
                 final EndClipping clipping = getEndClipping();
                 customTextStart = clipping.left;

@@ -8,7 +8,7 @@ import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 
 /**
  * My famous, patented, and trademarked block state generator for the weathered girder block.

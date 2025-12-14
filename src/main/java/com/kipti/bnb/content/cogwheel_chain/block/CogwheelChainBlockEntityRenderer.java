@@ -17,11 +17,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.List;
 import java.util.function.Function;
 
@@ -143,12 +141,13 @@ public class CogwheelChainBlockEntityRenderer extends KineticBlockEntityRenderer
 
         final VertexConsumer vc = buffer.getBuffer(RenderTypes.chain(CHAIN_LOCATION));
         final Matrix4f matrix4f = ms.last().pose();
+        Matrix3f normal = ms.last().normal();
         for (int i = 0; i < 4; i += 1) {
             final float uO = (i % 2 == 1) ? 0 : 3 / 16f;
-            addVertex(matrix4f, ms.last(), vc, endPoints.get((i + 2) % 4).subtract(from), minU + uO, minV, light1);
-            addVertex(matrix4f, ms.last(), vc, fromPoint.get((i + 2) % 4).subtract(from), minU + uO, maxV, light1);
-            addVertex(matrix4f, ms.last(), vc, fromPoint.get(i).subtract(from), maxU + uO, maxV, light1);
-            addVertex(matrix4f, ms.last(), vc, endPoints.get(i).subtract(from), maxU + uO, minV, light1);
+            addVertex(matrix4f, normal, vc, endPoints.get((i + 2) % 4).subtract(from), minU + uO, minV, light1);
+            addVertex(matrix4f, normal, vc, fromPoint.get((i + 2) % 4).subtract(from), minU + uO, maxV, light1);
+            addVertex(matrix4f, normal, vc, fromPoint.get(i).subtract(from), maxU + uO, maxV, light1);
+            addVertex(matrix4f, normal, vc, endPoints.get(i).subtract(from), maxU + uO, minV, light1);
         }
 
         ms.popPose();
@@ -197,8 +196,8 @@ public class CogwheelChainBlockEntityRenderer extends KineticBlockEntityRenderer
     private static void renderPart(final PoseStack pPoseStack, final VertexConsumer pConsumer, final float pMaxY, final float pX0, final float pZ0,
                                    final float pX1, final float pZ1, final float pX2, final float pZ2, final float pX3, final float pZ3, final float pMinU, final float pMaxU, final float pMinV,
                                    final float pMaxV, final int light1, final int light2, final boolean far) {
-        final PoseStack.Pose posestack$pose = pPoseStack.last();
-        final Matrix4f matrix4f = posestack$pose.pose();
+        final Matrix3f posestack$pose = pPoseStack.last().normal();
+        final Matrix4f matrix4f = pPoseStack.last().pose();
 
         final float uO = far ? 0f : 3 / 16f;
         renderQuad(matrix4f, posestack$pose, pConsumer, 0, pMaxY, pX0, pZ0, pX3, pZ3, pMinU, pMaxU, pMinV, pMaxV, light1,
@@ -211,7 +210,7 @@ public class CogwheelChainBlockEntityRenderer extends KineticBlockEntityRenderer
                 light1, light2);
     }
 
-    private static void renderQuad(final Matrix4f pPose, final PoseStack.Pose pNormal, final VertexConsumer pConsumer, final float pMinY, final float pMaxY,
+    private static void renderQuad(final Matrix4f pPose, final Matrix3f pNormal, final VertexConsumer pConsumer, final float pMinY, final float pMaxY,
                                    final float pMinX, final float pMinZ, final float pMaxX, final float pMaxZ, final float pMinU, final float pMaxU, final float pMinV, final float pMaxV,
                                    final int light1, final int light2) {
         addVertex(pPose, pNormal, pConsumer, pMaxY, pMinX, pMinZ, pMaxU, pMinV, light2);
@@ -220,19 +219,20 @@ public class CogwheelChainBlockEntityRenderer extends KineticBlockEntityRenderer
         addVertex(pPose, pNormal, pConsumer, pMaxY, pMaxX, pMaxZ, pMinU, pMinV, light2);
     }
 
-    private static void addVertex(final Matrix4f pPose, final PoseStack.Pose pNormal, final VertexConsumer pConsumer, final Vec3 pPos,
+    private static void addVertex(final Matrix4f pPose, final Matrix3f pNormal, final VertexConsumer pConsumer, final Vec3 pPos,
                                   final float pU, final float pV, final int light) {
         addVertex(pPose, pNormal, pConsumer, (float) pPos.y, (float) pPos.x, (float) pPos.z, pU, pV, light);
     }
 
-    private static void addVertex(final Matrix4f pPose, final PoseStack.Pose pNormal, final VertexConsumer pConsumer, final float pY, final float pX,
+    private static void addVertex(final Matrix4f pPose, final Matrix3f pNormal, final VertexConsumer pConsumer, final float pY, final float pX,
                                   final float pZ, final float pU, final float pV, final int light) {
-        pConsumer.addVertex(pPose, pX, pY, pZ)
-                .setColor(1.0f, 1.0f, 1.0f, 1.0f)
-                .setUv(pU, pV)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(light)
-                .setNormal(pNormal, 0.0F, 1.0F, 0.0F);
+        pConsumer.vertex(pPose, pX, pY, pZ)
+            .color(1.0f, 1.0f, 1.0f, 1.0f)
+            .uv(pU, pV)
+            .overlayCoords(OverlayTexture.NO_OVERLAY)
+            .uv2(light)
+            .normal(pNormal, 0.0F, 1.0F, 0.0F)
+            .endVertex();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.kipti.bnb.content.girder_strut;
 
-import com.kipti.bnb.registry.BnbDataComponents;
+import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.outliner.Outliner;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
@@ -36,8 +36,9 @@ public class GirderStrutPlacementEffects {
         if (level == null) {
             return;
         }
-        final BlockPos fromPos = heldItem.get(BnbDataComponents.GIRDER_STRUT_FROM);
-        final Direction fromFace = heldItem.get(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+        final Pair<BlockPos, Direction> placementData = GirderStrutBlockItem.getPlacement(heldItem);
+        final BlockPos fromPos = placementData.getFirst();
+        final Direction fromFace = placementData.getSecond();
 
         if (fromPos == null) {
             return;

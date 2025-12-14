@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(AllPaletteStoneTypes.class)
+@Mixin(value = AllPaletteStoneTypes.class, remap = false)
 public class AllPaletteStoneTypesMixin {
 
     @Inject(method = "register", at = @org.spongepowered.asm.mixin.injection.At("TAIL"))

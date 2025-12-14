@@ -58,12 +58,12 @@ public class CogwheelChainPathfinder {
         final PlacingCogwheelChain chain = worldSpaceChain.toLocalSpaceChain();
 
         AtomicReference<PartialPathFrontierData> leftPath = new AtomicReference<>(new PartialPathFrontierData(
-                ImmutableList.of(new PathedCogwheelNode(chain.getNodes().getFirst(), 1)),
+                ImmutableList.of(new PathedCogwheelNode(chain.getNodes().get(0), 1)),
                 0,
                 0
         ));
         AtomicReference<PartialPathFrontierData> rightPath = new AtomicReference<>(new PartialPathFrontierData(
-                ImmutableList.of(new PathedCogwheelNode(chain.getNodes().getFirst(), -1)),
+                ImmutableList.of(new PathedCogwheelNode(chain.getNodes().get(0), -1)),
                 0,
                 0
         ));
@@ -108,9 +108,9 @@ public class CogwheelChainPathfinder {
 
         final ArrayList<PathedCogwheelNode> finalTraversed = new ArrayList<>(finalPath.traversed);
 
-        finalTraversed.removeLast();
+        finalTraversed.remove(finalTraversed.size()-1);
         for (int i = 0; i < chain.getNodes().size() - 1; i++) {//TODO reduce the amount its "overpathing" to just the 2 extra nodes on each sideFactor
-            finalTraversed.removeFirst();
+            finalTraversed.remove(0);
         }
 
         return finalTraversed;

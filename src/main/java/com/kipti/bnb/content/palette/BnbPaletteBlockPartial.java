@@ -32,9 +32,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.WallSide;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -125,7 +125,7 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
 
         @Override
         protected StairBlock createBlock(final Supplier<? extends Block> block) {
-            return new StairBlock(block.get().defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(block.get()));
+            return new StairBlock(block.get().defaultBlockState(), BlockBehaviour.Properties.copy(block.get()));
         }
 
         @Override
@@ -165,7 +165,7 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
 
         @Override
         protected SlabBlock createBlock(final Supplier<? extends Block> block) {
-            return new SlabBlock(BlockBehaviour.Properties.ofFullCopy(block.get()));
+            return new SlabBlock(BlockBehaviour.Properties.copy(block.get()));
         }
 
         @Override
@@ -215,10 +215,10 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
             p.stonecutting(DataIngredient.tag(type.materialTag), category, c, 2);
             final DataIngredient ingredient = DataIngredient.items(c.get());
             ShapelessRecipeBuilder.shapeless(category, patternBlock.get())
-                    .requires(ingredient.toVanilla())
-                    .requires(ingredient.toVanilla())
-                    .unlockedBy("has_" + c.getName(), ingredient.getCriterion(p))
-                    .save(p, Create.ID + ":" + c.getName() + "_recycling");
+                    .requires(ingredient)
+                    .requires(ingredient)
+                    .unlockedBy("has_" + c.getName(), ingredient.getCritereon(p))
+                    .save(p, CreateBitsnBobs.MOD_ID + ":" + c.getName() + "_recycling");
         }
 
         @Override
@@ -238,7 +238,7 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
 
         @Override
         protected WallBlock createBlock(final Supplier<? extends Block> block) {
-            return new WallBlock(BlockBehaviour.Properties.ofFullCopy(block.get()).forceSolidOn());
+            return new WallBlock(BlockBehaviour.Properties.copy(block.get()).forceSolidOn());
         }
 
         @Override
@@ -274,8 +274,8 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
             ShapedRecipeBuilder.shaped(category, c.get(), 6)
                     .pattern("XXX")
                     .pattern("XXX")
-                    .define('X', ingredient.toVanilla())
-                    .unlockedBy("has_" + p.safeName(ingredient), ingredient.getCriterion(p))
+                    .define('X', ingredient)
+                    .unlockedBy("has_" + p.safeName(ingredient), ingredient.getCritereon(p))
                     .save(p, p.safeId(c.get()));
         }
 
@@ -289,7 +289,7 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
 
         @Override
         protected WallBlock createBlock(final Supplier<? extends Block> block) {
-            return new WallBlock(BlockBehaviour.Properties.ofFullCopy(block.get()).forceSolidOn());
+            return new WallBlock(BlockBehaviour.Properties.copy(block.get()).forceSolidOn());
         }
         
         @Override
@@ -397,8 +397,8 @@ public abstract class BnbPaletteBlockPartial<B extends Block> {
             ShapedRecipeBuilder.shaped(category, c.get(), 6)
                     .pattern("XXX")
                     .pattern("XXX")
-                    .define('X', ingredient.toVanilla())
-                    .unlockedBy("has_" + p.safeName(ingredient), ingredient.getCriterion(p))
+                    .define('X', ingredient)
+                    .unlockedBy("has_" + p.safeName(ingredient), ingredient.getCritereon(p))
                     .save(p, p.safeId(c.get()));
         }
     }

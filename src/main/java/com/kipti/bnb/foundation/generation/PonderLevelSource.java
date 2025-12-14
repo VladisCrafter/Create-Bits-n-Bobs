@@ -1,5 +1,6 @@
 package com.kipti.bnb.foundation.generation;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.DebugLevelSource;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -23,12 +25,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 public class PonderLevelSource extends ChunkGenerator {
-    public static final MapCodec<PonderLevelSource> CODEC = RecordCodecBuilder.mapCodec(
-            p_255576_ -> p_255576_.group(RegistryOps.retrieveElement(Biomes.THE_VOID)).apply(p_255576_, p_255576_.stable(PonderLevelSource::new))
-    );
+    public static final Codec<PonderLevelSource> CODEC = RecordCodecBuilder.create((p_255576_) -> p_255576_.group(RegistryOps.retrieveElement(Biomes.THE_VOID)).apply(p_255576_, p_255576_.stable(PonderLevelSource::new)));
 
     public PonderLevelSource(final Holder.Reference<Biome> biome) {
         super(new FixedBiomeSource(biome));
@@ -39,7 +40,7 @@ public class PonderLevelSource extends ChunkGenerator {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends ChunkGenerator> codec() {
+    protected Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 
@@ -52,7 +53,7 @@ public class PonderLevelSource extends ChunkGenerator {
     }
 
     @Override
-    public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(final @NotNull Blender blender, final @NotNull RandomState randomState, final @NotNull StructureManager structureManager, final @NotNull ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
         final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (int x = 0; x < 16; x++) {
@@ -60,9 +61,9 @@ public class PonderLevelSource extends ChunkGenerator {
                 for (int y = -64; y < (-64 + 16); y++) {
                     final BlockState blockState = getBlockStateFor(x, y, z);
                     pos.set(
-                            chunk.getPos().getBlockX(x),
-                            y,
-                            chunk.getPos().getBlockX(z)
+                        chunk.getPos().getBlockX(x),
+                        y,
+                        chunk.getPos().getBlockX(z)
                     );
                     chunk.setBlockState(pos, blockState, false);
                 }

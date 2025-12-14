@@ -15,12 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Iterator;
 import java.util.Map;
 
-//TODO: silent add and remove handling, i think that can just be flat
-
-///  dont actually need serialization in KBE, do, clear kinetic info. I think thats it, then go back and finish the flywheel mechanics
-/// //Ok looking at this more, i think i can avoid getting the flywheel capacity from the block, i just get from the network directly :D
-
-@Mixin(KineticNetwork.class)
+@Mixin(value = KineticNetwork.class, remap = false)
 public abstract class KineticNetworkMixin implements FlywheelAccessibleKineticNetwork {
 
     @Shadow

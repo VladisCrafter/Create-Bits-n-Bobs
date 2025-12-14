@@ -23,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class LightBlock extends DirectionalBlock implements IWrenchable {
 
-    public final MapCodec<LightBlock> CODEC;
-
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     private final VoxelShaper shaper;
@@ -39,7 +37,6 @@ public class LightBlock extends DirectionalBlock implements IWrenchable {
         super(p_52591_);
         this.shaper = shaper;
         registerDefaultState(defaultBlockState().setValue(POWER, 0));
-        CODEC = simpleCodec((p) -> new LightBlock(p, shaper, forcePlaceUpwards));
         this.forcePlaceUpwards = forcePlaceUpwards;
     }
 
@@ -61,7 +58,7 @@ public class LightBlock extends DirectionalBlock implements IWrenchable {
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos pos, @NotNull final CollisionContext context) {
+    public @NotNull VoxelShape getShape(final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos pos, @NotNull final CollisionContext context) {
         return shaper.get(state.getValue(FACING));
     }
 
@@ -71,7 +68,7 @@ public class LightBlock extends DirectionalBlock implements IWrenchable {
     }
 
     @Override
-    protected void neighborChanged(@NotNull final BlockState state, final Level level, @NotNull final BlockPos pos, @NotNull final Block block, @NotNull final BlockPos fromPos, final boolean isMoving) {
+    public void neighborChanged(@NotNull final BlockState state, final Level level, @NotNull final BlockPos pos, @NotNull final Block block, @NotNull final BlockPos fromPos, final boolean isMoving) {
         if (!level.isClientSide) {
             final int currentPower = state.getValue(POWER);
             final int signal = level.getBestNeighborSignal(pos);
@@ -86,16 +83,11 @@ public class LightBlock extends DirectionalBlock implements IWrenchable {
     }
 
     @Override
-    protected void tick(final BlockState state, @NotNull final ServerLevel level, @NotNull final BlockPos pos, @NotNull final RandomSource random) {
+    public void tick(final BlockState state, @NotNull final ServerLevel level, @NotNull final BlockPos pos, @NotNull final RandomSource random) {
         final int signal = level.getBestNeighborSignal(pos);
         if (state.getValue(POWER) != signal) {
             level.setBlock(pos, state.setValue(POWER, signal), 2);
         }
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends DirectionalBlock> codec() {
-        return CODEC;
     }
 
 }

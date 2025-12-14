@@ -3,6 +3,8 @@ package com.kipti.bnb;
 import com.kipti.bnb.network.BnbPackets;
 import com.kipti.bnb.registry.*;
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.Create;
+import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
@@ -11,11 +13,12 @@ import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -35,9 +38,9 @@ public class CreateBitsnBobs {
                             .andThen(TooltipModifier.mapNull(KineticStats.create(item)))
             );
 
-    public CreateBitsnBobs(final IEventBus modEventBus, final ModContainer modContainer) {
+    public CreateBitsnBobs(final FMLJavaModLoadingContext context) {
+        IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(CreateBitsnBobsData::gatherData);
-        ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
         REGISTRATE.registerEventListeners(modEventBus);
 
@@ -49,23 +52,19 @@ public class CreateBitsnBobs {
         BnbCreativeTabs.register(modEventBus);
         BnbBlockEntities.register();
         BnbTags.register();
-        BnbPackets.register();
-        BnbDataComponents.register(modEventBus);
+        BnbPackets.registerPackets();
         BnbDecoBlocks.register();
 
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreateBitsnBobsClient.setup(context.getContainer()));
         BnbCreateStresses.register();
 
         BnbLangEntries.register();
         BnbTags.registerDataGenerators();
 
-        BnbDataConditions.register(modEventBus);
+        modEventBus.addListener(BnbDataConditions::registerSerializers);
+        modEventBus.addListener(BnbRegisterEvent::onRegisterEvent);
 
-        modEventBus.addListener(CreateBitsnBobs::commonSetup);
-
-        BnbConfigs.register(modLoadingContext, modContainer);
-    }
-
-    private static void commonSetup(final FMLCommonSetupEvent event) {
+        BnbConfigs.register(context, context.getContainer());
     }
 
     public static ResourceLocation asResource(final String s) {

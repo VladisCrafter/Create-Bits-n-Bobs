@@ -57,8 +57,8 @@ public class GirderStrutBlockEntity extends SmartBlockEntity implements IBlockEn
     }
 
     @Override
-    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.write(tag, registries, clientPacket);
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
         ListTag list = new ListTag();
         for (BlockPos p : connections) {
             CompoundTag ct = new CompoundTag();
@@ -71,8 +71,8 @@ public class GirderStrutBlockEntity extends SmartBlockEntity implements IBlockEn
     }
 
     @Override
-    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
         connections.clear();
         if (tag.contains("Connections", Tag.TAG_LIST)) {
             ListTag list = tag.getList("Connections", Tag.TAG_COMPOUND);

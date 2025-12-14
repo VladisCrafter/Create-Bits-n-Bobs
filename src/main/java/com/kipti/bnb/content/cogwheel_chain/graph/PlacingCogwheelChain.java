@@ -2,15 +2,13 @@ package com.kipti.bnb.content.cogwheel_chain.graph;
 
 import com.kipti.bnb.registry.BnbBlocks;
 import com.kipti.bnb.registry.BnbConfigs;
-import com.mojang.serialization.Codec;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
-import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -25,13 +23,58 @@ import java.util.Objects;
  */
 public class PlacingCogwheelChain {
 
-    public static final Codec<PlacingCogwheelChain> CODEC = PlacingCogwheelNode.CODEC.listOf().xmap(PlacingCogwheelChain::new, chain -> chain.visitedNodes);
+    public static CompoundTag writeToNbt(PlacingCogwheelChain chain) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("size", chain.getSize());
+        for (int i = 0; i < chain.getSize(); i++) {
+            PlacingCogwheelNode node = chain.getVisitedNodes().get(i);
+            CompoundTag nodeTag = new CompoundTag();
+            nodeTag.putLong("pos", node.pos().asLong());
+            nodeTag.putString("axis", node.rotationAxis().name());
+            nodeTag.putBoolean("isLarge", node.isLarge());
+            nodeTag.putBoolean("hasOffsetForSmallCogwheel", node.hasOffsetForSmallCogwheel());
+            tag.put("node_" + i, nodeTag);
+        }
+        return tag;
+    }
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PlacingCogwheelChain> STREAM_CODEC = StreamCodec.composite(
-            CatnipStreamCodecBuilders.list(PlacingCogwheelNode.STREAM_CODEC),
-            chain -> chain.visitedNodes,
-            PlacingCogwheelChain::new
-    );
+    public static PlacingCogwheelChain readFromNbt(CompoundTag tag) {
+        int size = tag.getInt("size");
+        List<PlacingCogwheelNode> nodes = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            CompoundTag nodeTag = tag.getCompound("node_" + i);
+            BlockPos pos = BlockPos.of(nodeTag.getLong("pos"));
+            Direction.Axis axis = Direction.Axis.byName(nodeTag.getString("axis"));
+            boolean isLarge = nodeTag.getBoolean("isLarge");
+            boolean hasOffsetForSmallCogwheel = nodeTag.getBoolean("hasOffsetForSmallCogwheel");
+            nodes.add(new PlacingCogwheelNode(pos, axis, isLarge, hasOffsetForSmallCogwheel));
+        }
+        return new PlacingCogwheelChain(nodes);
+    }
+
+    public static void writeToBuffer(PlacingCogwheelChain chain, FriendlyByteBuf buf) {
+        buf.writeInt(chain.getSize());
+        for (PlacingCogwheelNode node : chain.getVisitedNodes()) {
+            buf.writeBlockPos(node.pos());
+            buf.writeEnum(node.rotationAxis());
+            buf.writeBoolean(node.isLarge());
+            buf.writeBoolean(node.hasOffsetForSmallCogwheel());
+        }
+    }
+
+    public static PlacingCogwheelChain readFromBuffer(FriendlyByteBuf buf) {
+        int size = buf.readInt();
+        List<PlacingCogwheelNode> nodes = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            BlockPos pos = buf.readBlockPos();
+            Direction.Axis axis = buf.readEnum(Direction.Axis.class);
+            boolean isLarge = buf.readBoolean();
+            boolean hasOffsetForSmallCogwheel = buf.readBoolean();
+            nodes.add(new PlacingCogwheelNode(pos, axis, isLarge, hasOffsetForSmallCogwheel));
+        }
+        return new PlacingCogwheelChain(nodes);
+    }
+
     public static final Integer MAX_CHAIN_BOUNDS = 32;//TODO config
 
     private List<PlacingCogwheelNode> visitedNodes;
@@ -45,7 +88,7 @@ public class PlacingCogwheelChain {
     }
 
     public int getChainsRequiredInLoop() {
-        return getChainsRequired(Vec3.atLowerCornerOf(visitedNodes.getLast().pos().subtract(visitedNodes.getFirst().pos())).length());
+        return getChainsRequired(Vec3.atLowerCornerOf(visitedNodes.get(visitedNodes.size()-1).pos().subtract(visitedNodes.get(0).pos())).length());
     }
 
     /**
@@ -65,16 +108,16 @@ public class PlacingCogwheelChain {
     }
 
     public static boolean isValidBlockTarget(final BlockState state) {
-        return state.is(AllBlocks.COGWHEEL) || state.is(AllBlocks.LARGE_COGWHEEL) ||
-                state.is(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL) || state.is(BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL);
+        return AllBlocks.COGWHEEL.has(state) ||  AllBlocks.LARGE_COGWHEEL.has(state) ||
+                BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL.has(state) || BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL.has(state);
     }
 
     public static boolean isLargeBlockTarget(final BlockState state) {
-        return state.is(AllBlocks.LARGE_COGWHEEL) || state.is(BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL);
+        return AllBlocks.LARGE_COGWHEEL.has(state) || BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL.has(state);
     }
 
     public static boolean hasSmallCogwheelOffset(final BlockState state) {
-        return state.is(AllBlocks.COGWHEEL);
+        return AllBlocks.COGWHEEL.has(state);
     }
 
 
@@ -189,12 +232,12 @@ public class PlacingCogwheelChain {
 
     public boolean canBuildChainIfLooping() throws ChainInteractionFailedException {
         if (getSize() < 2) return false;
-        final PlacingCogwheelNode firstNode = visitedNodes.getFirst();
+        final PlacingCogwheelNode firstNode = visitedNodes.get(0);
         final PlacingCogwheelNode lastNode = getLastNode();
         if (!firstNode.pos().equals(lastNode.pos())) return false;
 
         // Remove last chainNode to avoid duplication
-        visitedNodes.removeLast();
+        visitedNodes.remove(visitedNodes.size()-1);
         if (CogwheelChainPathfinder.buildChainPath(this) == null) {
             throw new ChainInteractionFailedException("pathfinding_failed");
         }
@@ -210,11 +253,11 @@ public class PlacingCogwheelChain {
     }
 
     public PlacingCogwheelNode getFirstNode() {
-        return visitedNodes.getFirst();
+        return visitedNodes.get(0);
     }
 
     public PlacingCogwheelNode getLastNode() {
-        return visitedNodes.getLast();
+        return visitedNodes.get(visitedNodes.size()-1);
     }
 
     public Vec3 getNodeCenter(final int i) {
@@ -291,4 +334,9 @@ public class PlacingCogwheelChain {
         this.visitedNodes = visitedNodes;
     }
 
+    public void removeLastNode() {
+        if (!visitedNodes.isEmpty()) {
+            visitedNodes.remove(visitedNodes.size() - 1);
+        }
+    }
 }

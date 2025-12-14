@@ -6,7 +6,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public class ChairBlockStateGen {

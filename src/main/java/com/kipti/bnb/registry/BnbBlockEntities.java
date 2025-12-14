@@ -18,6 +18,8 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import dev.engine_room.flywheel.api.model.Model;
 import dev.engine_room.flywheel.lib.model.Models;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import static com.kipti.bnb.CreateBitsnBobs.REGISTRATE;
 
@@ -48,16 +50,21 @@ public class BnbBlockEntities {
 
     public static final BlockEntityEntry<CogwheelChainBlockEntity> COGWHEEL_CHAIN = REGISTRATE.blockEntity("cogwheel_chain", CogwheelChainBlockEntity::new)
             .visual(() -> (context, blockEntity, partialTick) -> {
+                BlockState state = getBlockState(blockEntity);
                 Model model = Models.partial(
-                        blockEntity.getBlockState().is(BnbBlocks.SMALL_SPROCKET_COGWHEEL_CHAIN) ? BnbPartialModels.SMALL_SPROCKET_COGWHEEL_BLOCK :
-                                blockEntity.getBlockState().is(BnbBlocks.LARGE_SPROCKET_COGWHEEL_CHAIN) ? BnbPartialModels.LARGE_SPROCKET_COGWHEEL_BLOCK :
-                                        blockEntity.getBlockState().is(BnbBlocks.SMALL_FLANGED_COGWHEEL_CHAIN) ? BnbPartialModels.SMALL_FLANGED_COGWHEEL_BLOCK : BnbPartialModels.LARGE_FLANGED_COGWHEEL_BLOCK
+                    BnbBlocks.SMALL_SPROCKET_COGWHEEL_CHAIN.has(state) ? BnbPartialModels.SMALL_SPROCKET_COGWHEEL_BLOCK :
+                        BnbBlocks.LARGE_SPROCKET_COGWHEEL_CHAIN.has(state) ? BnbPartialModels.LARGE_SPROCKET_COGWHEEL_BLOCK :
+                            BnbBlocks.SMALL_FLANGED_COGWHEEL_CHAIN.has(state) ? BnbPartialModels.SMALL_FLANGED_COGWHEEL_BLOCK : BnbPartialModels.LARGE_FLANGED_COGWHEEL_BLOCK
                 );
                 return new SingleAxisRotatingVisual<>(context, blockEntity, partialTick, model);
             }, true)
             .validBlocks(BnbBlocks.SMALL_SPROCKET_COGWHEEL_CHAIN, BnbBlocks.LARGE_SPROCKET_COGWHEEL_CHAIN, BnbBlocks.SMALL_FLANGED_COGWHEEL_CHAIN, BnbBlocks.LARGE_FLANGED_COGWHEEL_CHAIN)
             .renderer(() -> CogwheelChainBlockEntityRenderer::new)
             .register();
+
+    private static @NotNull BlockState getBlockState(CogwheelChainBlockEntity blockEntity) {
+        return blockEntity.getBlockState();
+    }
 
     public static final BlockEntityEntry<FlywheelBearingBlockEntity> FLYWHEEL_BEARING = REGISTRATE
             .blockEntity("flywheel_bearing", FlywheelBearingBlockEntity::new)
@@ -75,7 +82,7 @@ public class BnbBlockEntities {
     public static final BlockEntityEntry<KineticBlockEntity> EMPTY_FLANGED_COGWHEEL = REGISTRATE.blockEntity("empty_flanged_cogwheel", KineticBlockEntity::new)
             .visual(() -> (context, blockEntity, partialTick) ->
                     new SingleAxisRotatingVisual<>(context, blockEntity, partialTick,
-                            Models.partial(blockEntity.getBlockState().is(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL) ? BnbPartialModels.SMALL_FLANGED_COGWHEEL_BLOCK : BnbPartialModels.LARGE_FLANGED_COGWHEEL_BLOCK)), true)
+                            Models.partial(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL.has(blockEntity.getBlockState()) ? BnbPartialModels.SMALL_FLANGED_COGWHEEL_BLOCK : BnbPartialModels.LARGE_FLANGED_COGWHEEL_BLOCK)), true)
             .validBlocks(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL, BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL)
             .renderer(() -> KineticBlockEntityRenderer::new)
             .register();

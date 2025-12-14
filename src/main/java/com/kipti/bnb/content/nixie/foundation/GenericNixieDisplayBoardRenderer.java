@@ -96,22 +96,6 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
         ms.popPose();
     }
 
-    private static int getTextColor(final GenericNixieDisplayBlockEntity be) {
-        int col = 0xffffffff;
-        final Block block = be.getBlockState().getBlock();
-        if (block instanceof final NixieBoardBlockNixie nbb) {
-            if (nbb.getDyeColor() != null) {
-                col = nbb.getDyeColor().getTextureDiffuseColor() | 0x000000ff; // Ensure alpha is set
-            }
-        }
-        if (block instanceof final LargeNixieTubeBlockNixie lnb) {
-            if (lnb.getDyeColor() != null) {
-                col = lnb.getDyeColor().getTextureDiffuseColor() | 0x000000ff;
-            }
-        }
-        return col;
-    }
-
     private static void renderGlyphUsingSpecialFont(final PoseStack ms, final MultiBufferSource buffer, final int overlay, final int glyph, Matrix4f pose, final Couple<Integer> col) {
         final VertexConsumer cutoutBuffer = buffer.getBuffer(RenderType.cutout());
 
@@ -122,71 +106,71 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
         final float v0 = characterUv.getV0();
         final float v1 = characterUv.getV1();
 
-        final int primary = FastColor.ARGB32.opaque(col.get(true));
+        final int primary = (col.get(true)) | -16777216;
         addVerticesForChar(overlay, cutoutBuffer, pose, u0, v1, v0, u1, primary);
         pose = pose.translate(0.5f, 0.5f, 0.1f);
-        final int secondary = FastColor.ARGB32.opaque(col.get(false));
+        final int secondary = (col.get(false)) | -16777216;
         addVerticesForChar(overlay, cutoutBuffer, pose, u0, v1, v0, u1, secondary);
     }
 
     private static void addVerticesForChar(final int overlay, final VertexConsumer cutoutBuffer, final Matrix4f pose, final float u0, final float v1, final float v0, final float u1, final int col) {
         cutoutBuffer
-                .addVertex(pose, 0, 12, 0)
-                .setColor(col)
-                .setUv(u0, v1)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 0, 12, 0)
+                .color(col)
+                .uv(u0, v1)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 0, 0, 0)
-                .setColor(col)
-                .setUv(u0, v0)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 0, 0, 0)
+                .color(col)
+                .uv(u0, v0)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 12, 0, 0)
-                .setColor(col)
-                .setUv(u1, v0)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 12, 0, 0)
+                .color(col)
+                .uv(u1, v0)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 12, 12, 0)
-                .setColor(col)
-                .setUv(u1, v1)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 12, 12, 0)
+                .color(col)
+                .uv(u1, v1)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
 
         cutoutBuffer
-                .addVertex(pose, 12, 12, 0)
-                .setColor(col)
-                .setUv(u1, v1)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 12, 12, 0)
+                .color(col)
+                .uv(u1, v1)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 12, 0, 0)
-                .setColor(col)
-                .setUv(u1, v0)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 12, 0, 0)
+                .color(col)
+                .uv(u1, v0)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 0, 0, 0)
-                .setColor(col)
-                .setUv(u0, v0)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 0, 0, 0)
+                .color(col)
+                .uv(u0, v0)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
         cutoutBuffer
-                .addVertex(pose, 0, 12, 0)
-                .setColor(col)
-                .setUv(u0, v1)
-                .setOverlay(overlay)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(1, 0, 0);
+                .vertex(pose, 0, 12, 0)
+                .color(col)
+                .uv(u0, v1)
+                .overlayCoords(overlay)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(1, 0, 0);
     }
 
     private static void renderUsingNormalFont(final PoseStack ms, final MultiBufferSource buffer, final FontSet fontSet, final int glyph, final Matrix4f pose, final Couple<Integer> colours) {

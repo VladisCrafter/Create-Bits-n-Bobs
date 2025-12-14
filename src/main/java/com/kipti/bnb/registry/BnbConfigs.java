@@ -3,13 +3,13 @@ package com.kipti.bnb.registry;
 import com.kipti.bnb.foundation.config.BnbCommonConfig;
 import com.kipti.bnb.foundation.config.BnbServerConfig;
 import net.createmod.catnip.config.ConfigBase;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Create's {@link com.simibubi.create.infrastructure.config.AllConfigs} equivalent for Bits 'n' Bobs.
  */
-@EventBusSubscriber
+@Mod.EventBusSubscriber
 public class BnbConfigs {
 
     private static final Map<ModConfig.Type, ConfigBase> CONFIGS = new EnumMap<>(ModConfig.Type.class);
@@ -45,7 +45,7 @@ public class BnbConfigs {
     }
 
     private static <T extends ConfigBase> T register(final Supplier<T> factory, final ModConfig.Type side) {
-        final Pair<T, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(builder -> {
+        final Pair<T, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(builder -> {
             final T config = factory.get();
             config.registerAll(builder);
             return config;
@@ -57,13 +57,13 @@ public class BnbConfigs {
         return config;
     }
 
-    public static void register(final ModLoadingContext context, final ModContainer container) {
+    public static void register(final FMLJavaModLoadingContext context, final ModContainer container) {
 //        client = register(CClient::new, ModConfig.Type.CLIENT);
         common = register(BnbCommonConfig::new, ModConfig.Type.COMMON);
         server = register(BnbServerConfig::new, ModConfig.Type.SERVER);
 
-        for (final Map.Entry<ModConfig.Type, ConfigBase> pair : CONFIGS.entrySet())
-            container.registerConfig(pair.getKey(), pair.getValue().specification);
+        for (Map.Entry<ModConfig.Type, ConfigBase> pair : CONFIGS.entrySet())
+            context.registerConfig(pair.getKey(), pair.getValue().specification);
     }
 
     @SubscribeEvent

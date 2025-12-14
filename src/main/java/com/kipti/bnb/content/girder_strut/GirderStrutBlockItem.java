@@ -1,9 +1,11 @@
 package com.kipti.bnb.content.girder_strut;
 
-import com.kipti.bnb.registry.BnbDataComponents;
+import net.createmod.catnip.data.Pair;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -36,9 +38,8 @@ public class GirderStrutBlockItem extends BlockItem {
         Direction face = context.getClickedFace();
 
         if (context.isSecondaryUseActive()) {
-            if (stack.has(BnbDataComponents.GIRDER_STRUT_FROM) || stack.has(BnbDataComponents.GIRDER_STRUT_FROM_FACE)) {
-                stack.remove(BnbDataComponents.GIRDER_STRUT_FROM);
-                stack.remove(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+            if (hasPlacement(stack)) {
+                clearPlacement(stack);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
             return InteractionResult.PASS;
@@ -50,21 +51,20 @@ public class GirderStrutBlockItem extends BlockItem {
             placementFace = level.getBlockState(placementPos).getValue(GirderStrutBlock.FACING);
         }
 
-        if (!stack.has(BnbDataComponents.GIRDER_STRUT_FROM)) {
+        if (!hasPlacement(stack)) {
             if (placementPos == null) {
                 return InteractionResult.FAIL;
             }
-
-            stack.set(BnbDataComponents.GIRDER_STRUT_FROM, placementPos);
-            stack.set(BnbDataComponents.GIRDER_STRUT_FROM_FACE, placementFace);
+            setPlacement(stack, placementPos, placementFace);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
-        BlockPos fromPos = stack.get(BnbDataComponents.GIRDER_STRUT_FROM);
-        Direction fromFace = stack.get(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+        Pair<BlockPos, Direction> fromData = getPlacement(stack);
+
+        BlockPos fromPos = fromData.getFirst();
+        Direction fromFace = fromData.getSecond();
         if (fromPos == null) {
-            stack.remove(BnbDataComponents.GIRDER_STRUT_FROM);
-            stack.remove(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+            clearPlacement(stack);
             return InteractionResult.FAIL;
         }
 
@@ -90,22 +90,46 @@ public class GirderStrutBlockItem extends BlockItem {
             ConnectionResult result = tryConnect(context, fromPos, fromFace, placementPos, targetFace);
             if (result != ConnectionResult.SUCCESS) {
                 if (result == ConnectionResult.INVALID) {
-                    stack.remove(BnbDataComponents.GIRDER_STRUT_FROM);
-                    stack.remove(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+                    clearPlacement(stack);
                 }
                 return InteractionResult.FAIL;
             }
         }
 
-        stack.remove(BnbDataComponents.GIRDER_STRUT_FROM);
-        stack.remove(BnbDataComponents.GIRDER_STRUT_FROM_FACE);
+        clearPlacement(stack);
 
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
+    public static boolean hasPlacement(ItemStack stack) {
+        return stack.hasTag() && stack.getTag().contains("GirderStrutFrom");
+    }
+
+    public static void clearPlacement(ItemStack stack) {
+        stack.removeTagKey("GirderStrutFrom");
+        stack.removeTagKey("GirderStrutFromFace");
+    }
+
+    public static Pair<BlockPos, Direction> getPlacement(ItemStack stack) {
+        if (!stack.hasTag() || !hasPlacement(stack)) {
+            return Pair.of(null, null);
+        }
+        BlockPos fromPos = new BlockPos(NBTHelper.readVec3i(stack.getOrCreateTag().getList("GirderStrutFrom", Tag.TAG_INT)));
+        Direction fromFace = Direction.byName(stack.getOrCreateTag().getString("GirderStrutFromFace"));
+        if (fromFace == null) {
+            fromFace = Direction.UP;
+        }
+        return Pair.of(fromPos, fromFace);
+    }
+
+    public static void setPlacement(ItemStack stack, BlockPos fromPos, Direction fromFace) {
+        stack.getOrCreateTag().put("GirderStrutFrom", NBTHelper.writeVec3i(fromPos));
+        stack.getOrCreateTag().putString("GirderStrutFromFace", fromFace.getName());
+    }
+
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.has(BnbDataComponents.GIRDER_STRUT_FROM) || super.isFoil(stack);
+        return hasPlacement(stack) || super.isFoil(stack);
     }
 
     public static boolean isValidConnection(Level level, BlockPos fromPos, Direction fromFace, BlockPos toPos, Direction toFace) {

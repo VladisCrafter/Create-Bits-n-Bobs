@@ -5,7 +5,7 @@ import com.simibubi.create.foundation.block.DyedBlockList;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.Arrays;

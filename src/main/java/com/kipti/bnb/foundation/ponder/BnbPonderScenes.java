@@ -13,7 +13,7 @@ import net.minecraft.world.item.Items;
 public class BnbPonderScenes {
 
     public static void register(final PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        final PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        final PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
         helper.addStoryBoard(BuiltInRegistries.ITEM.getKey(Items.CHAIN), "chain_cog/flat", CogwheelChainScenes::flatCogwheelChain);
         helper.addStoryBoard(BuiltInRegistries.ITEM.getKey(Items.CHAIN), "chain_cog/axis_change", CogwheelChainScenes::changingAxisCogwheelChain);

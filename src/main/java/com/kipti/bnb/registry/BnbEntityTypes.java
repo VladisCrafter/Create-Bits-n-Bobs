@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 
 public class BnbEntityTypes {
 
@@ -29,9 +29,8 @@ public class BnbEntityTypes {
     private static <T extends Entity> CreateEntityBuilder<T, ?> contraption(String name, EntityType.EntityFactory<T> factory,
                                                                             NonNullSupplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? super T>>> renderer, int range,
                                                                             int updateFrequency, boolean sendVelocity) {
-        return (CreateEntityBuilder<T, ?>) register(name, factory, renderer, MobCategory.MISC, range, updateFrequency, sendVelocity, true,
-                AbstractContraptionEntity::build)
-                .tag(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED);
+        return register(name, factory, renderer, MobCategory.MISC, range, updateFrequency, sendVelocity, true,
+                AbstractContraptionEntity::build);
     }
 
     private static <T extends Entity> CreateEntityBuilder<T, ?> register(String name, EntityType.EntityFactory<T> factory,

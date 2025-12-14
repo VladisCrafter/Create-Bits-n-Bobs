@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +100,7 @@ public class CogwheelChainBlock extends RotatedPillarKineticBlock
             return InteractionResult.SUCCESS;
 
         final ItemStack drops = cogwheelChainBE.destroyChain(player == null);
-        if (player != null && !player.hasInfiniteMaterials())
+        if (player != null && !player.isCreative())
             player.getInventory().placeItemBackInInventory(drops);
         state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
         context.getLevel()
@@ -148,7 +148,7 @@ public class CogwheelChainBlock extends RotatedPillarKineticBlock
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(final @NotNull BlockState state) {
+    public @NotNull RenderShape getRenderShape(final @NotNull BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 

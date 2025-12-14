@@ -1,6 +1,7 @@
 package com.kipti.bnb.content.cogwheel_chain.graph;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -17,7 +18,7 @@ public class ChainInteractionFailedException extends Exception {
     }
 
     public Component getComponent() {
-        return getTranslatedMessage().withColor(0xFF_ff5d6c);
+        return getTranslatedMessage().withStyle(ChatFormatting.RED);
     }
 
     public static void addTranslationLangs(final CreateRegistrate registrate, final String... keyValuePairs) {

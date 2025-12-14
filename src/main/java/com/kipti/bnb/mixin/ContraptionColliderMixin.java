@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ContraptionCollider.class)
+@Mixin(value = ContraptionCollider.class, remap = false)
 public class ContraptionColliderMixin {
 
     @WrapOperation(method = "isCollidingWithWorld", at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/BlockEntry;has(Lnet/minecraft/world/level/block/state/BlockState;)Z"))

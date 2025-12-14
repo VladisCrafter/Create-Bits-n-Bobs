@@ -10,9 +10,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
@@ -22,18 +22,18 @@ public class BnbCreativeTabs {
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CreateBitsnBobs.MOD_ID);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BASE_CREATIVE_TAB = REGISTER.register("bnb_based",
+    public static final RegistryObject<CreativeModeTab> BASE_CREATIVE_TAB = REGISTER.register("bnb_based",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("tab." + CreateBitsnBobs.MOD_ID + ".base"))
                     .withTabsBefore(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.getId())
                     .icon(BnbItems.ICON_LIGHTBULB::asStack)
                     .displayItems((p, o) -> buildCreativeTabContents(p, o, () -> BnbCreativeTabs.BASE_CREATIVE_TAB)).build());
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DECO_CREATIVE_TAB = REGISTER.register("bnb_deco",
+    public static final RegistryObject<CreativeModeTab> DECO_CREATIVE_TAB = REGISTER.register("bnb_deco",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("tab." + CreateBitsnBobs.MOD_ID + ".deco"))
                     .withTabsBefore(BnbCreativeTabs.BASE_CREATIVE_TAB.getId())
-                    .icon(() -> BnbPaletteStoneTypes.ASURINE.getVariants().registeredBlocks.getFirst().asStack())
+                    .icon(() -> BnbPaletteStoneTypes.ASURINE.getVariants().registeredBlocks.get(0).asStack())
                     .displayItems((p, o) -> buildCreativeTabContents(p, o, () -> BnbCreativeTabs.DECO_CREATIVE_TAB)).build());
 
     private static boolean matchesBlockFilter(final BlockItem item) {
@@ -55,8 +55,8 @@ public class BnbCreativeTabs {
         REGISTER.register(modEventBus);
     }
 
-    private static void buildCreativeTabContents(final CreativeModeTab.ItemDisplayParameters parameters, final CreativeModeTab.Output output, final Supplier<DeferredHolder<CreativeModeTab, CreativeModeTab>> tabToGet) {
-        for (final RegistryEntry<Item, Item> item : CreateBitsnBobs.REGISTRATE.getAll(Registries.ITEM)) {
+    private static void buildCreativeTabContents(final CreativeModeTab.ItemDisplayParameters parameters, final CreativeModeTab.Output output, final Supplier<RegistryObject<CreativeModeTab>> tabToGet) {
+        for (final RegistryEntry<Item> item : CreateBitsnBobs.REGISTRATE.getAll(Registries.ITEM)) {
             if (!(CreateRegistrate.isInCreativeTab(item, tabToGet.get()) && item.get() instanceof final BlockItem blockItem) || !BnbFeatureFlag.isEnabled(blockItem))
                 continue;
 
@@ -65,7 +65,7 @@ public class BnbCreativeTabs {
             else if (matchesBlockFilter(blockItem))
                 output.accept(item.get());
         }
-        for (final RegistryEntry<Item, Item> item : CreateBitsnBobs.REGISTRATE.getAll(Registries.ITEM)) {
+        for (final RegistryEntry<Item> item : CreateBitsnBobs.REGISTRATE.getAll(Registries.ITEM)) {
             if (!CreateRegistrate.isInCreativeTab(item, tabToGet.get()) || (item.get() instanceof BlockItem))
                 continue;
 

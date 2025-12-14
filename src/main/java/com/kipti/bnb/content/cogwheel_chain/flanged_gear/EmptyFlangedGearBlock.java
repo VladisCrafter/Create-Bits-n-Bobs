@@ -26,7 +26,7 @@ public class EmptyFlangedGearBlock extends RotatedPillarKineticBlock implements 
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(final BlockState state, final @NotNull BlockGetter level, final @NotNull BlockPos pos, final @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(final BlockState state, final @NotNull BlockGetter level, final @NotNull BlockPos pos, final @NotNull CollisionContext context) {
         return (isLarge ? AllShapes.LARGE_GEAR : AllShapes.SMALL_GEAR).get(state.getValue(AXIS));
     }
 
@@ -39,7 +39,7 @@ public class EmptyFlangedGearBlock extends RotatedPillarKineticBlock implements 
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(final @NotNull BlockState state) {
+    public @NotNull RenderShape getRenderShape(final @NotNull BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 

@@ -9,7 +9,7 @@ import com.simibubi.create.foundation.utility.BlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -51,18 +51,20 @@ public class ChairBlock extends SeatBlock implements IWrenchable {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult p_225533_6_) {
         if (player.isShiftKeyDown() || player instanceof FakePlayer)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
 
+        ItemStack stack = player.getItemInHand(hand);
         DyeColor color = DyeColor.getColor(stack);
         if (color != null && color != this.color) {
             if (level.isClientSide)
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             BlockState newState = BlockHelper.copyProperties(state, BnbBlocks.CHAIRS.get(color)
                     .getDefaultState());
             level.setBlockAndUpdate(pos, newState);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         List<SeatEntity> seats = level.getEntitiesOfClass(SeatEntity.class, new AABB(pos));
@@ -70,18 +72,18 @@ public class ChairBlock extends SeatBlock implements IWrenchable {
             SeatEntity seatEntity = seats.get(0);
             List<Entity> passengers = seatEntity.getPassengers();
             if (!passengers.isEmpty() && passengers.get(0) instanceof Player)
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.PASS;
             if (!level.isClientSide) {
                 seatEntity.ejectPassengers();
                 player.startRiding(seatEntity);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (level.isClientSide)
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         sitDown(level, pos, getLeashed(level, player).or(player));
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

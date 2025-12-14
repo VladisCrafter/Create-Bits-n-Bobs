@@ -17,9 +17,9 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -81,7 +81,7 @@ public class HeadlampModelBuilder extends BakedModelWrapper<BakedModel> {
     }
 
     private List<BakedQuad> transformQuadsForLamp(final List<BakedQuad> quads, final PoseStack poseStack, final int placementValue) {
-        @Nullable final DyeColor color = placementValue == 1 ? null : DyeColor.values()[Math.clamp(placementValue - 2, 0, DyeColor.values().length - 1)];
+        @Nullable final DyeColor color = placementValue == 1 ? null : DyeColor.values()[Math.min(Math.max(placementValue - 2, 0), DyeColor.values().length - 1)];
         final Matrix4f pose = poseStack.last().pose();
         final List<BakedQuad> transformedQuads = new ArrayList<>();
         for (final BakedQuad quad : quads) {

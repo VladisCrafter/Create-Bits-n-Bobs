@@ -1,31 +1,10 @@
 package com.kipti.bnb.content.cogwheel_chain.graph;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.createmod.catnip.codecs.stream.CatnipStreamCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 public record RenderedChainPathNode(BlockPos relativePos, Vec3 nodeOffset) {
-
-    public static final Codec<RenderedChainPathNode> CODEC = RecordCodecBuilder.create(
-            p_337946_ -> p_337946_.group(
-                            BlockPos.CODEC.fieldOf("relativePos").forGetter(RenderedChainPathNode::relativePos),
-                            Vec3.CODEC.fieldOf("nodeEnter").forGetter(RenderedChainPathNode::nodeOffset)
-                    )
-                    .apply(p_337946_, RenderedChainPathNode::new)
-    );
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, RenderedChainPathNode> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC,
-            RenderedChainPathNode::relativePos,
-            CatnipStreamCodecs.VEC3,
-            RenderedChainPathNode::nodeOffset,
-            RenderedChainPathNode::new
-    );
 
     public Vec3 getPosition() {
         return relativePos.getCenter().add(nodeOffset);

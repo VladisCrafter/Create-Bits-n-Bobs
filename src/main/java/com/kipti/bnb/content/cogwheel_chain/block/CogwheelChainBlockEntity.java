@@ -55,8 +55,8 @@ public class CogwheelChainBlockEntity extends SimpleKineticBlockEntity implement
     }
 
     @Override
-    protected void read(final CompoundTag compound, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.read(compound, registries, clientPacket);
+    protected void read(final CompoundTag compound, final boolean clientPacket) {
+        super.read(compound, clientPacket);
         isController = compound.getBoolean("IsController");
         if (compound.contains("ControllerOffsetX")) {
             controllerOffset = new Vec3i(
@@ -81,8 +81,8 @@ public class CogwheelChainBlockEntity extends SimpleKineticBlockEntity implement
     }
 
     @Override
-    protected void write(final CompoundTag compound, final HolderLookup.Provider registries, final boolean clientPacket) {
-        super.write(compound, registries, clientPacket);
+    protected void write(final CompoundTag compound, final boolean clientPacket) {
+        super.write(compound, clientPacket);
         compound.putBoolean("IsController", isController);
 
         if (controllerOffset != null) {

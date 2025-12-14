@@ -2,9 +2,12 @@ package com.kipti.bnb.content.cogwheel_chain.item;
 
 import com.kipti.bnb.content.cogwheel_chain.graph.ChainInteractionFailedException;
 import com.kipti.bnb.content.cogwheel_chain.graph.PlacingCogwheelChain;
+import com.kipti.bnb.network.BnbPackets;
 import com.kipti.bnb.network.packets.from_client.PlaceCogwheelChainPacket;
 import com.kipti.bnb.registry.BnbFeatureFlag;
+import com.simibubi.create.AllPackets;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
+import com.simibubi.create.content.trains.entity.TrainPromptPacket;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -19,13 +22,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-@EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(Dist.CLIENT)
 public class CogwheelChainPlacementInteraction {
 
     protected static @Nullable PlacingCogwheelChain currentBuildingChain = null;
@@ -99,7 +103,7 @@ public class CogwheelChainPlacementInteraction {
         } else {
             //if this is the last node, then remove the last one
             if (currentBuildingChain.getLastNode().pos().equals(hitPos)) {
-                currentBuildingChain.getNodes().removeLast();
+                currentBuildingChain.removeLastNode();
                 //If no nodes left, clear chain
                 if (currentBuildingChain.getNodes().isEmpty()) {
                     currentBuildingChain = null;
@@ -128,7 +132,7 @@ public class CogwheelChainPlacementInteraction {
 
                 if (completed) {
                     //If completed, send to server, clear current chain
-                    CatnipServices.NETWORK.sendToServer(new PlaceCogwheelChainPacket(currentBuildingChain, event.getHand().ordinal()));
+                    BnbPackets.getChannel().sendToServer(new PlaceCogwheelChainPacket(currentBuildingChain, event.getHand().ordinal()));
 
                     currentBuildingChain = null;
                     currentChainLevel = null;

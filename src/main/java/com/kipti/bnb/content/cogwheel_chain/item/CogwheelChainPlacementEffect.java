@@ -50,7 +50,7 @@ public class CogwheelChainPlacementEffect {
         if (heldItem != null) {
             final BlockPos targetedPos = getTargetedBlockAndDisplay();
 
-            if (!player.hasInfiniteMaterials()) {
+            if (!player.isCreative()) {
                 final double additionalDistance = targetedPos != null ?
                         Vec3.atLowerCornerOf(targetedPos.subtract(currentBuildingChain.getLastNode().pos())).length() : 0;
                 final int chainsRequired = currentBuildingChain.getChainsRequired(additionalDistance);

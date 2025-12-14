@@ -30,7 +30,7 @@ public class LightbulbBlock extends LightBlock {
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return (state.getValue(CAGE) ? BnbShapes.LIGHTBULB_CAGED_SHAPE : BnbShapes.LIGHTBULB_SHAPE).get(state.getValue(FACING));
     }
 

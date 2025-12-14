@@ -342,8 +342,8 @@ public final class GirderCapAccumulator {
         for (int index : loop) {
             CapVertex vertex = uniqueVertices.get(index);
             Vector3f toVertex = new Vector3f(vertex.position()).sub(uvOrigin);
-            float u = Math.clamp(toVertex.dot(uvRight), -0.5f, 0.5f);
-            float v = Math.clamp(toVertex.dot(uvUp), -0.5f, 0.5f);
+            float u = Math.min(Math.max(toVertex.dot(uvRight), -0.5f), 0.5f);
+            float v = Math.min(Math.max(toVertex.dot(uvUp), -0.5f), 0.5f);
             // Update vertex UVs
             uniqueVertices.set(index, new CapVertex(vertex.position(), uScale * u + uOffset, vScale * v + vOffset, vertex.color(), vertex.light(), vertex.sourceSprite()));
         }

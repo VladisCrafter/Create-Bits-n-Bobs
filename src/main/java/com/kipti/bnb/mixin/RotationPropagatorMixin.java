@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 /**
  * Enable functionality for large cogwheels with a facing value instead of an axis value.
  */
-@Mixin(RotationPropagator.class)
+@Mixin(value = RotationPropagator.class, remap = false)
 public class RotationPropagatorMixin {
 
     @Redirect(method = "isLargeToLargeGear", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))

@@ -11,9 +11,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -58,7 +58,7 @@ public class DoubleOrientedBlockModel extends BakedModelWrapper<BakedModel> {
 
             final PoseStack transformStack = new PoseStack();
             transformStack.translate(0.5, 0.5, 0.5);
-            transformStack.mulPose(doubleOrientedModelData.getRotation());
+            transformStack.mulPoseMatrix(doubleOrientedModelData.getRotation());
             transformStack.translate(-0.5, -0.5, -0.5);
             return new ArrayList<>(transformQuads(super.getQuads(state, side, rand, data, renderType), transformStack));
         }

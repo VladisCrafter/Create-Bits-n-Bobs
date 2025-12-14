@@ -9,11 +9,11 @@ import com.simibubi.create.content.equipment.clipboard.ClipboardEntry;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -43,8 +43,6 @@ import java.util.Objects;
  * Started off as a generic display block that can be oriented in two directions, but contains code for the displays in general.
  */
 public class GenericNixieDisplayBlock extends DirectionalBlock implements IWrenchable {
-
-    public static final MapCodec<GenericNixieDisplayBlock> CODEC = simpleCodec(GenericNixieDisplayBlock::new);
 
     public static final DirectionProperty ORIENTATION = DirectionProperty.create("orientation");
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
@@ -103,51 +101,56 @@ public class GenericNixieDisplayBlock extends DirectionalBlock implements IWrenc
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(final ItemStack stack, final BlockState state, final Level level, final BlockPos pos, final Player player, final InteractionHand hand, final BlockHitResult hitResult) {
-        final boolean display =
-                stack.getItem() == Items.NAME_TAG && stack.has(DataComponents.CUSTOM_NAME) || AllBlocks.CLIPBOARD.isIn(stack);
-        final DyeColor dye = DyeColor.getColor(stack);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult hitResult) {
+        if (player.isShiftKeyDown())
+            return InteractionResult.PASS;
+
+        final ItemStack stack = player.getItemInHand(interactionHand);
+        boolean display =
+            stack.getItem() == Items.NAME_TAG && stack.hasCustomHoverName() || AllBlocks.CLIPBOARD.isIn(stack);
+        DyeColor dye = DyeColor.getColor(stack);
 
         if (!display && dye == null || (!(level.getBlockEntity(pos) instanceof GenericNixieDisplayBlockEntity startBlockEntity)))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
 
-        Component component = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+        CompoundTag tag = stack.getTagElement("display");
+        String tagElement = tag != null && tag.contains("Name", Tag.TAG_STRING) ? tag.getString("Name") : null;
+
+        Component component = tagElement == null ? Component.empty() : Component.literal(tagElement);
         @Nullable Component secondRowComponent = null;
 
         if (AllBlocks.CLIPBOARD.isIn(stack)) {
             final List<ClipboardEntry> entries = ClipboardEntry.getLastViewedEntries(stack);
-            component = entries.getFirst().text;
+            component = entries.get(0).text;
             if (entries.size() > 1) {
                 secondRowComponent = entries.get(1).text;
             }
         }
 
         if (level.isClientSide)
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
 
-        final String tagUsed = Component.Serializer.toJson(component, level.registryAccess());
+        final String tagUsed = Component.Serializer.toJson(component);
         final @Nullable String secondRowTagUsed = secondRowComponent == null ? null :
-                Component.Serializer.toJson(secondRowComponent, level.registryAccess());
+            Component.Serializer.toJson(secondRowComponent);
 
         final int startLine = getLineForPlacement(state, pos, hitResult, level);
 
         final GenericNixieDisplayBlockEntity.ConfigurableDisplayOptions currentDisplay = startBlockEntity.getCurrentDisplayOption();
-        GenericNixieDisplayTarget.walkNixies(level, pos, (currentPos, consumedCharsOnRow, blockEntity) -> {
-            if (display)
-                if (blockEntity instanceof final GenericNixieDisplayBlockEntity displayBlockEntity) {
-                    if (displayBlockEntity.getCurrentDisplayOption() != currentDisplay && displayBlockEntity.getPossibleDisplayOptions().contains(currentDisplay)) {
-                        displayBlockEntity.setDisplayOption(currentDisplay);
-                    }
-
-                    displayBlockEntity.displayCustomText(tagUsed, consumedCharsOnRow, startLine);
-                    if (secondRowTagUsed != null && startLine == 0)
-                        displayBlockEntity.displayCustomText(secondRowTagUsed, consumedCharsOnRow, 1);
+        GenericNixieDisplayTarget.walkNixies(level, pos, (currentPos, consumedCharsOnRow, displayBlockEntity) -> {
+            if (display) {
+                if (displayBlockEntity.getCurrentDisplayOption() != currentDisplay && displayBlockEntity.getPossibleDisplayOptions().contains(currentDisplay)) {
+                    displayBlockEntity.setDisplayOption(currentDisplay);
                 }
-            if (dye != null)
+
+                displayBlockEntity.displayCustomText(tagUsed, consumedCharsOnRow, startLine);
+                if (secondRowTagUsed != null && startLine == 0)
+                    displayBlockEntity.displayCustomText(secondRowTagUsed, consumedCharsOnRow, 1);
+            } if (dye != null)
                 level.setBlockAndUpdate(currentPos, withColor(state, dye));
         });
 
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     private static BlockState withColor(final BlockState state, final DyeColor color) {
@@ -195,11 +198,6 @@ public class GenericNixieDisplayBlock extends DirectionalBlock implements IWrenc
         } else {
             return 0;
         }
-    }
-
-    @Override
-    protected MapCodec<? extends DirectionalBlock> codec() {
-        return CODEC;
     }
 
 }
