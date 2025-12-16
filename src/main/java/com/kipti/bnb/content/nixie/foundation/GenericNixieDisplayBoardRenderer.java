@@ -56,16 +56,16 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
         final boolean isLargeNixieTube = be.getBlockState().getBlock() instanceof LargeNixieTubeBlockNixie;
         if (be.currentDisplayOption != GenericNixieDisplayBlockEntity.ConfigurableDisplayOptions.ALWAYS_UP && facing != Direction.UP) {
             TransformStack.of(ms)
-                    .center()
-                    .mulPose(DoubleOrientedBlockModel.getRotation(facing, orientation))
-                    .uncenter();
+                .center()
+                .mulPose(DoubleOrientedBlockModel.getRotation(facing, orientation))
+                .uncenter();
             orientationOffset = isLargeNixieTube ? -2 / 16f : 0;
         } else {
             TransformStack.of(ms)
-                    .center()
-                    .translate(Vec3.atLowerCornerOf(facing.getNormal()).scale(2 / 16f))
-                    .mulPose(DoubleOrientedBlockModel.getRotation(Direction.UP, orientation))
-                    .uncenter();
+                .center()
+                .translate(Vec3.atLowerCornerOf(facing.getNormal()).scale(2 / 16f))
+                .mulPose(DoubleOrientedBlockModel.getRotation(Direction.UP, orientation))
+                .uncenter();
             orientationOffset = -4 / 16f;
         }
 
@@ -97,7 +97,8 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
     }
 
     private static void renderGlyphUsingSpecialFont(final PoseStack ms, final MultiBufferSource buffer, final int overlay, final int glyph, Matrix4f pose, final Couple<Integer> col) {
-        final VertexConsumer cutoutBuffer = buffer.getBuffer(RenderType.cutout());
+        RenderType type = RenderType.cutout();
+        final VertexConsumer cutoutBuffer = buffer.getBuffer(type);
 
         ms.translate(-6, -3, 0);
         final TextBlockSubAtlas.Uv characterUv = TextBlockSubAtlas.NIXIE_TEXT_SUB_ATLAS.getUvForCharacter(glyph);
@@ -111,74 +112,83 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
         pose = pose.translate(0.5f, 0.5f, 0.1f);
         final int secondary = (col.get(false)) | -16777216;
         addVerticesForChar(overlay, cutoutBuffer, pose, u0, v1, v0, u1, secondary);
+        if (buffer instanceof final MultiBufferSource.BufferSource bs) {
+            bs.endBatch(type);
+        }
     }
 
     private static void addVerticesForChar(final int overlay, final VertexConsumer cutoutBuffer, final Matrix4f pose, final float u0, final float v1, final float v0, final float u1, final int col) {
         cutoutBuffer
-                .vertex(pose, 0, 12, 0)
-                .color(col)
-                .uv(u0, v1)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 0, 12, 0)
+            .color(col)
+            .uv(u0, v1)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 0, 0, 0)
-                .color(col)
-                .uv(u0, v0)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 0, 0, 0)
+            .color(col)
+            .uv(u0, v0)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 12, 0, 0)
-                .color(col)
-                .uv(u1, v0)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 12, 0, 0)
+            .color(col)
+            .uv(u1, v0)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 12, 12, 0)
-                .color(col)
-                .uv(u1, v1)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 12, 12, 0)
+            .color(col)
+            .uv(u1, v1)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
 
         cutoutBuffer
-                .vertex(pose, 12, 12, 0)
-                .color(col)
-                .uv(u1, v1)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 12, 12, 0)
+            .color(col)
+            .uv(u1, v1)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 12, 0, 0)
-                .color(col)
-                .uv(u1, v0)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 12, 0, 0)
+            .color(col)
+            .uv(u1, v0)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 0, 0, 0)
-                .color(col)
-                .uv(u0, v0)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 0, 0, 0)
+            .color(col)
+            .uv(u0, v0)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
         cutoutBuffer
-                .vertex(pose, 0, 12, 0)
-                .color(col)
-                .uv(u0, v1)
-                .overlayCoords(overlay)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(1, 0, 0);
+            .vertex(pose, 0, 12, 0)
+            .color(col)
+            .uv(u0, v1)
+            .overlayCoords(overlay)
+            .uv2(LightTexture.FULL_BRIGHT)
+            .normal(1, 0, 0)
+            .endVertex();
     }
 
     private static void renderUsingNormalFont(final PoseStack ms, final MultiBufferSource buffer, final FontSet fontSet, final int glyph, final Matrix4f pose, final Couple<Integer> colours) {
         final BakedGlyph bakedGlyph = fontSet.getGlyph(glyph);
         final VertexConsumer vertexconsumer = buffer.getBuffer(bakedGlyph.renderType(Font.DisplayMode.NORMAL));
         final float width = fontSet.getGlyphInfo(glyph, true).getAdvance(false) - 1;
-
-        RenderSystem.disableCull();
 
         final float r = (colours.get(true) >> 16 & 0xFF) / 255.0f;
         final float g = (colours.get(true) >> 8 & 0xFF) / 255.0f;
@@ -187,19 +197,30 @@ public class GenericNixieDisplayBoardRenderer extends SmartBlockEntityRenderer<G
         final float gSecondary = (colours.get(false) >> 8 & 0xFF) / 255.0f;
         final float bSecondary = (colours.get(false) & 0xFF) / 255.0f;
 
-        bakedGlyph.render(false, -width / 2, 0, pose, vertexconsumer, r, g, b, 1, LightTexture.FULL_BRIGHT);
+        bakedGlyph.render(false, -width / 2, 0, ms.last().pose(), vertexconsumer, r, g, b, 1, LightTexture.FULL_BRIGHT);
+
+        ms.pushPose();
+        ms.scale(-1, 1, 1);
+        bakedGlyph.render(false, -width / 2, 0, ms.last().pose(), vertexconsumer, r, g, b, 1, LightTexture.FULL_BRIGHT);
+        ms.popPose();
 
         ms.pushPose();
         ms.translate(0, 0, 0.1f);
-        final Matrix4f backPose = ms.last().pose();
-        bakedGlyph.render(false, -width / 2 + 0.5f, 0.5f, backPose, vertexconsumer,
-                rSecondary, gSecondary, bSecondary,
-                1, LightTexture.FULL_BRIGHT);
+        bakedGlyph.render(false, -width / 2 + 0.5f, 0.5f, ms.last().pose(), vertexconsumer,
+            rSecondary, gSecondary, bSecondary,
+            1, LightTexture.FULL_BRIGHT);
+
+        ms.pushPose();
+        ms.scale(-1, 1, 1);
+        bakedGlyph.render(false, -width / 2 + 0.5f, 0.5f, ms.last().pose(), vertexconsumer,
+            rSecondary, gSecondary, bSecondary,
+            1, LightTexture.FULL_BRIGHT);
+        ms.popPose();
+
         ms.popPose();
 
         if (buffer instanceof final MultiBufferSource.BufferSource bs) {
             bs.endBatch(bakedGlyph.renderType(Font.DisplayMode.NORMAL));
         }
-        RenderSystem.enableCull();
     }
 }
