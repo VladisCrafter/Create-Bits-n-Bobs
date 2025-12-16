@@ -217,12 +217,14 @@ public final class GirderGeometry {
     private static Consumer<BufferBuilder> buildQuadConsumer(final List<GirderVertex> tri) {
         return bufferBuilder -> {
             for (final GirderVertex vertex : tri) {
-                bufferBuilder.vertex(vertex.position().x, vertex.position().y, vertex.position().z)
-                        .color((vertex.color() >> 16) & 0xFF, (vertex.color() >> 8) & 0xFF, vertex.color() & 0xFF, (vertex.color() >> 24) & 0xFF)
-                        .uv(vertex.u(), vertex.v())
-                        .overlayCoords(OverlayTexture.NO_OVERLAY)
-                        .uv2(vertex.light())
-                        .normal(vertex.normal().x, vertex.normal().y, vertex.normal().z);
+                bufferBuilder
+                    .vertex(vertex.position().x, vertex.position().y, vertex.position().z)
+                    .color((vertex.color() >> 16) & 0xFF, (vertex.color() >> 8) & 0xFF, vertex.color() & 0xFF, (vertex.color() >> 24) & 0xFF)
+                    .uv(vertex.u(), vertex.v())
+                    .overlayCoords(OverlayTexture.NO_OVERLAY)
+                    .uv2(vertex.light())
+                    .normal(vertex.normal().x, vertex.normal().y, vertex.normal().z)
+                    .endVertex();
             }
         };
     }

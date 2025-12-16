@@ -143,4 +143,5 @@ public class GirderStrutBlock extends Block implements IBE<GirderStrutBlockEntit
     public void setModelType(final StrutModelType modelType) {
         this.modelType = modelType;
     }
+
 }

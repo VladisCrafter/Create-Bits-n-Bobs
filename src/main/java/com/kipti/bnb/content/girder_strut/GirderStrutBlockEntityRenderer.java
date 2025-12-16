@@ -127,8 +127,8 @@ public class GirderStrutBlockEntityRenderer extends SmartBlockEntityRenderer<Gir
     }
 
     @Override
-    public boolean shouldRender(final GirderStrutBlockEntity blockEntity, final Vec3 cameraPos) {
-        return true;
+    public int getViewDistance() {
+        return 256;
     }
 
     @Override
