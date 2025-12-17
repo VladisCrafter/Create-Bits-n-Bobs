@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "bits_n_bobs:feature_enabled",
+          "feature": "chairs"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "building",
+        "ingredients": [
+          {
+            "item": "minecraft:blue_wool"
+          },
+          {
+            "tag": "minecraft:wooden_stairs"
+          }
+        ],
+        "result": {
+          "item": "bits_n_bobs:blue_chair"
+        }
+      }
+    }
+  ]
+}

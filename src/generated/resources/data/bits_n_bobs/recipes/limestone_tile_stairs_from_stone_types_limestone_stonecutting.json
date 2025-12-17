@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "tag": "create:stone_types/limestone"
+  },
+  "result": "bits_n_bobs:limestone_tile_stairs"
+}

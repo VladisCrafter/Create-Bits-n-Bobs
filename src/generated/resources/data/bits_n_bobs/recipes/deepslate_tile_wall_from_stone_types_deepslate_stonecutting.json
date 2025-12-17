@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "tag": "create:stone_types/deepslate"
+  },
+  "result": "bits_n_bobs:deepslate_tile_wall"
+}

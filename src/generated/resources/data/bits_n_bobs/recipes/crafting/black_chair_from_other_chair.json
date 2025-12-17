@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "bits_n_bobs:feature_enabled",
+          "feature": "chairs"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "building",
+        "ingredients": [
+          {
+            "tag": "forge:dyes/black"
+          },
+          {
+            "tag": "bits_n_bobs:chairs"
+          }
+        ],
+        "result": {
+          "item": "bits_n_bobs:black_chair"
+        }
+      }
+    }
+  ]
+}

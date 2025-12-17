@@ -14,27 +14,27 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = RotationPropagator.class, remap = false)
 public class RotationPropagatorMixin {
 
-    @Redirect(method = "isLargeToLargeGear", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+    @Redirect(method = "isLargeToLargeGear", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;", remap = true))
     private static Comparable bits_n_bobs$getValueFrom(BlockState instance, Property property) {
         return ((IRotate) instance.getBlock()).getRotationAxis(instance);
     }
 
-    @Redirect(method = "isLargeToLargeGear", at = @At(ordinal = 1, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+    @Redirect(method = "isLargeToLargeGear", at = @At(ordinal = 1, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;", remap = true))
     private static Comparable bits_n_bobs$getValueTo(BlockState instance, Property property) {
         return ((IRotate) instance.getBlock()).getRotationAxis(instance);
     }
 
-    @Redirect(method = "isLargeToSmallCog", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+    @Redirect(method = "isLargeToSmallCog", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;", remap = true))
     private static Comparable bits_n_bobs$getValue(BlockState instance, Property property) {
         return ((IRotate) instance.getBlock()).getRotationAxis(instance);
     }
 
-    @Redirect(method = "getRotationSpeedModifier", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+    @Redirect(method = "getRotationSpeedModifier", at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;", remap = true))
     private static Comparable bits_n_bobs$getValueSource(BlockState instance, Property property) {
         return ((IRotate) instance.getBlock()).getRotationAxis(instance);
     }
 
-    @Redirect(method = "getRotationSpeedModifier", at = @At(ordinal = 1, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+    @Redirect(method = "getRotationSpeedModifier", at = @At(ordinal = 1, value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;", remap = true))
     private static Comparable bits_n_bobs$getValueTarget(BlockState instance, Property property) {
         return ((IRotate) instance.getBlock()).getRotationAxis(instance);
     }

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "calcite_tile_stairs",
+  "key": {
+    "X": {
+      "item": "bits_n_bobs:calcite_tiles"
+    }
+  },
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "item": "bits_n_bobs:calcite_tile_stairs"
+  },
+  "show_notification": true
+}

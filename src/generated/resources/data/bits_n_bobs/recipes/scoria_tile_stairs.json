@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "scoria_tile_stairs",
+  "key": {
+    "X": {
+      "item": "bits_n_bobs:scoria_tiles"
+    }
+  },
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "item": "bits_n_bobs:scoria_tile_stairs"
+  },
+  "show_notification": true
+}

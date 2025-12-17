@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "asurine_tile_slab",
+  "key": {
+    "X": {
+      "item": "bits_n_bobs:asurine_tiles"
+    }
+  },
+  "pattern": [
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "item": "bits_n_bobs:asurine_tile_slab"
+  },
+  "show_notification": true
+}

@@ -7,18 +7,23 @@ import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 @Mixin(WorldDimensions.class)
 public class WorldDimensionsMixin {
 
-    @Inject(method = "lambda$specialWorldProperty$2", at = @At("RETURN"), cancellable = true)
-    private static void modifyPonderWorldFlatProperty(LevelStem p_251481_, final CallbackInfoReturnable<PrimaryLevelData.SpecialWorldProperty> cir) {
-        final ChunkGenerator chunkgenerator = p_251481_.generator();
-        if (chunkgenerator instanceof PonderLevelSource) {
-            cir.setReturnValue(PrimaryLevelData.SpecialWorldProperty.FLAT);
-        }
+    @Redirect(method = "specialWorldProperty", at = @At(value = "INVOKE", target = "Ljava/util/Optional;map(Ljava/util/function/Function;)Ljava/util/Optional;"))
+    private static Optional<?> modifyPonderWorldFlatProperty(Optional<LevelStem> instance, Function<LevelStem, ?> mapper) {
+        return instance.map(stem -> {
+            ChunkGenerator generator = stem.generator();
+            if (generator instanceof PonderLevelSource) {
+                return PrimaryLevelData.SpecialWorldProperty.FLAT;
+            }
+            return mapper.apply(stem);
+        });
     }
 
 }
