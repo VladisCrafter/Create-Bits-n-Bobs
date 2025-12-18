@@ -77,3 +77,6 @@
   - Weathered girder vertical CT
   - Fixed small flanged cogwheel not getting ponder
   - Fixed chairs not rotating when disassembled
+# 1.21.1-0.0.24
+- Changes:
+    - Allowed chain cogwheels (that aren't flanged) to connect like normal cogwheels
