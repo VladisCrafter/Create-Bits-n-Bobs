@@ -147,7 +147,7 @@ public class ChairBlock extends SeatBlock implements IWrenchable {
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    public BlockState rotate(final BlockState state, final Rotation rotation) {
         return super.rotate(state, rotation)
                 .setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
