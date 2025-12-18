@@ -1,3 +1,4 @@
+
 {
   "type": "forge:conditional",
   "recipes": [
@@ -5,32 +6,30 @@
       "conditions": [
         {
           "type": "bits_n_bobs:feature_item_enabled",
-          "item": "bits_n_bobs:brass_lamp"
-        },
-        {
-          "type": "bits_n_bobs:feature_item_enabled",
-          "item": "bits_n_bobs:lightbulb"
+          "item": "bits_n_bobs:large_nixie_tube"
         }
       ],
       "recipe":
+
       {
         "type": "minecraft:crafting_shaped",
         "category": "building",
         "key": {
-          "B": {
-            "item": "create:brass_sheet"
+          "Q": {
+            "item": "create:polished_rose_quartz"
           },
-          "L": {
-            "item": "bits_n_bobs:lightbulb"
+          "P": {
+            "item": "create:iron_sheet"
           }
         },
         "pattern": [
-          "B",
-          "L"
+          "QQ ",
+          "QQ ",
+          "PP "
         ],
         "result": {
-          "count": 1,
-          "id": "bits_n_bobs:brass_lamp"
+          "count": 4,
+          "item": "bits_n_bobs:large_nixie_tube"
         }
       }
     }

@@ -1,4 +1,3 @@
-
 {
   "type": "forge:conditional",
   "recipes": [
@@ -6,7 +5,11 @@
       "conditions": [
         {
           "type": "bits_n_bobs:feature_item_enabled",
-          "item": "bits_n_bobs:weathered_girder_strut"
+          "item": "bits_n_bobs:brass_lamp"
+        },
+        {
+          "type": "bits_n_bobs:feature_item_enabled",
+          "item": "bits_n_bobs:lightbulb"
         }
       ],
       "recipe":
@@ -14,21 +17,20 @@
         "type": "minecraft:crafting_shaped",
         "category": "building",
         "key": {
-          "A": {
-            "item": "create:andesite_alloy"
+          "B": {
+            "item": "create:brass_sheet"
           },
-          "G": {
-            "item": "bits_n_bobs:weathered_metal_girder"
+          "L": {
+            "item": "bits_n_bobs:lightbulb"
           }
         },
         "pattern": [
-          "A  ",
-          "GGG",
-          "  A"
+          "B",
+          "L"
         ],
         "result": {
-          "count": 6,
-          "id": "bits_n_bobs:weathered_girder_strut"
+          "count": 1,
+          "item": "bits_n_bobs:brass_lamp"
         }
       }
     }

@@ -6,30 +6,29 @@
       "conditions": [
         {
           "type": "bits_n_bobs:feature_item_enabled",
-          "item": "bits_n_bobs:large_nixie_tube"
+          "item": "bits_n_bobs:weathered_girder_strut"
         }
       ],
       "recipe":
-
       {
         "type": "minecraft:crafting_shaped",
         "category": "building",
         "key": {
-          "Q": {
-            "item": "create:polished_rose_quartz"
+          "A": {
+            "item": "create:andesite_alloy"
           },
-          "P": {
-            "item": "create:iron_sheet"
+          "G": {
+            "item": "bits_n_bobs:weathered_metal_girder"
           }
         },
         "pattern": [
-          "QQ ",
-          "QQ ",
-          "PP "
+          "A  ",
+          "GGG",
+          "  A"
         ],
         "result": {
-          "count": 4,
-          "id": "bits_n_bobs:large_nixie_tube"
+          "count": 6,
+          "item": "bits_n_bobs:weathered_girder_strut"
         }
       }
     }
