@@ -85,4 +85,9 @@
     - Ru_ru localisation update
 # 1.21.1-0.0.26
 - Changes:
-    - Fixed crash chaz found related to nixie tubes
+    - Fixed crash shalz found related to nixie tubes
+# 1.20.1-0.0.26
+- Changes carried from 0.0.24-0.0.26:
+  - Allowed chain cogwheels (that aren't flanged) to connect like normal cogwheels
+  - Ru_ru localisation update
+  - Fixed crash shalz found related to nixie tubes
