@@ -100,3 +100,8 @@
 # 1.21.1-0.0.29
 - Changes:
   - Fixed spanish translation being invalid
+# 1.20.1-0.0.29
+- Changes carried from 0.0.27-0.0.29:
+  - Fixed spanish translation being invalid
+  - Allowed chairs to have inverse corners (pretty much appearing like seats)
+  - Allowed light force-on when interacting with an empty hand for all lights
