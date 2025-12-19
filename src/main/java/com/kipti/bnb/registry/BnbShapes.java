@@ -50,6 +50,9 @@ public class BnbShapes {
             .add(cuboid(3, 3, 3, 13, 16, 13))
             .forDirectional();
 
+    public static final VoxelShaper HORIZONTAL_CHUTE = shape(1, 8, 1, 15, 16, 15).add(2, 0, 2, 14, 8, 14)
+            .forDirectional(); //For directional because default Y shape
+
     public static AllShapes.Builder shape(VoxelShape shape) {
         return new AllShapes.Builder(shape);
     }

@@ -67,6 +67,7 @@
   "block.bits_n_bobs.green_nixie_board": "Green Nixie Board",
   "block.bits_n_bobs.headlamp": "Headlamp",
   "block.bits_n_bobs.headlamp.tooltip.summary": "Can be dyed and placed _multiple times in same block_. Useful for trains or fancy signage too!",
+  "block.bits_n_bobs.horizontal_chute": "Horizontal Chute",
   "block.bits_n_bobs.large_cogwheel_chain": "Large Cogwheel Chain",
   "block.bits_n_bobs.large_flanged_cogwheel": "Large Flanged Cogwheel",
   "block.bits_n_bobs.large_flanged_cogwheel_chain": "Large Flanged Cogwheel Chain",

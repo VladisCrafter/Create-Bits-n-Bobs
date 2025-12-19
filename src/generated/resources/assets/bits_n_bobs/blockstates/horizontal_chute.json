@@ -1,0 +1,80 @@
+{
+  "variants": {
+    "horizontal_facing=east,shape=encased": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 270
+    },
+    "horizontal_facing=east,shape=intersection": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 270
+    },
+    "horizontal_facing=east,shape=normal": {
+      "model": "bits_n_bobs:block/chute/block",
+      "x": 90,
+      "y": 270
+    },
+    "horizontal_facing=east,shape=window": {
+      "model": "bits_n_bobs:block/chute/block_windowed",
+      "x": 90,
+      "y": 270
+    },
+    "horizontal_facing=north,shape=encased": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 180
+    },
+    "horizontal_facing=north,shape=intersection": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 180
+    },
+    "horizontal_facing=north,shape=normal": {
+      "model": "bits_n_bobs:block/chute/block",
+      "x": 90,
+      "y": 180
+    },
+    "horizontal_facing=north,shape=window": {
+      "model": "bits_n_bobs:block/chute/block_windowed",
+      "x": 90,
+      "y": 180
+    },
+    "horizontal_facing=south,shape=encased": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90
+    },
+    "horizontal_facing=south,shape=intersection": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90
+    },
+    "horizontal_facing=south,shape=normal": {
+      "model": "bits_n_bobs:block/chute/block",
+      "x": 90
+    },
+    "horizontal_facing=south,shape=window": {
+      "model": "bits_n_bobs:block/chute/block_windowed",
+      "x": 90
+    },
+    "horizontal_facing=west,shape=encased": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 90
+    },
+    "horizontal_facing=west,shape=intersection": {
+      "model": "bits_n_bobs:block/chute/block_intersection",
+      "x": 90,
+      "y": 90
+    },
+    "horizontal_facing=west,shape=normal": {
+      "model": "bits_n_bobs:block/chute/block",
+      "x": 90,
+      "y": 90
+    },
+    "horizontal_facing=west,shape=window": {
+      "model": "bits_n_bobs:block/chute/block_windowed",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

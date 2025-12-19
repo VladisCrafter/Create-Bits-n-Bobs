@@ -10,6 +10,8 @@ import com.kipti.bnb.content.flywheel_bearing.FlywheelBearingBlock;
 import com.kipti.bnb.content.girder_strut.GirderStrutBlock;
 import com.kipti.bnb.content.girder_strut.GirderStrutBlockItem;
 import com.kipti.bnb.content.girder_strut.GirderStrutModelBuilder;
+import com.kipti.bnb.content.horizontal_chute.HorizontalChuteBlock;
+import com.kipti.bnb.content.horizontal_chute.HorizontalChuteGenerator;
 import com.kipti.bnb.content.light.founation.LightBlock;
 import com.kipti.bnb.content.light.headlamp.HeadlampBlock;
 import com.kipti.bnb.content.light.headlamp.HeadlampBlockItem;
@@ -24,6 +26,7 @@ import com.kipti.bnb.content.weathered_girder.WeatheredConnectedGirderModel;
 import com.kipti.bnb.content.weathered_girder.WeatheredGirderBlock;
 import com.kipti.bnb.content.weathered_girder.WeatheredGirderBlockStateGenerator;
 import com.kipti.bnb.content.weathered_girder.WeatheredGirderEncasedShaftBlock;
+import com.kipti.bnb.foundation.client.BnbModelGen;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllDisplaySources;
 import com.simibubi.create.AllTags;
@@ -32,6 +35,7 @@ import com.simibubi.create.content.contraptions.actors.seat.SeatInteractionBehav
 import com.simibubi.create.content.contraptions.actors.seat.SeatMovementBehaviour;
 import com.simibubi.create.content.contraptions.pulley.PulleyBlock;
 import com.simibubi.create.foundation.block.DyedBlockList;
+import com.simibubi.create.foundation.block.render.ReducedDestroyEffects;
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -403,6 +407,20 @@ public class BnbBlocks {
                 .build()
                 .register();
     });
+
+    public static final BlockEntry<HorizontalChuteBlock> HORIZONTAL_CHUTE = REGISTRATE.block("horizontal_chute", HorizontalChuteBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.mapColor(MapColor.COLOR_GRAY)
+                    .sound(SoundType.NETHERITE_BLOCK)
+                    .noOcclusion()
+                    .isSuffocating((state, level, pos) -> false))
+            .transform(pickaxeOnly())
+            .addLayer(() -> RenderType::cutoutMipped)
+            .clientExtension(() -> ReducedDestroyEffects::new)
+            .blockstate(new HorizontalChuteGenerator()::generate)
+            .item()
+            .transform(BnbModelGen.customItemModel("chute", "_", "block"))
+            .register();
 
     public static void register() {
     }

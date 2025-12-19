@@ -8,6 +8,8 @@ import com.kipti.bnb.content.flywheel_bearing.FlywheelBearingBlockEntity;
 import com.kipti.bnb.content.flywheel_bearing.FlywheelBearingBlockEntityRenderer;
 import com.kipti.bnb.content.girder_strut.GirderStrutBlockEntity;
 import com.kipti.bnb.content.girder_strut.GirderStrutBlockEntityRenderer;
+import com.kipti.bnb.content.horizontal_chute.HorizontalChuteBlockEntity;
+import com.kipti.bnb.content.horizontal_chute.HorizontalChuteRenderer;
 import com.kipti.bnb.content.light.headlamp.HeadlampBlockEntity;
 import com.kipti.bnb.content.nixie.foundation.GenericNixieDisplayBlockEntity;
 import com.kipti.bnb.content.nixie.foundation.GenericNixieDisplayBoardRenderer;
@@ -78,6 +80,12 @@ public class BnbBlockEntities {
                             Models.partial(blockEntity.getBlockState().is(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL) ? BnbPartialModels.SMALL_FLANGED_COGWHEEL_BLOCK : BnbPartialModels.LARGE_FLANGED_COGWHEEL_BLOCK)), true)
             .validBlocks(BnbBlocks.SMALL_EMPTY_FLANGED_COGWHEEL, BnbBlocks.LARGE_EMPTY_FLANGED_COGWHEEL)
             .renderer(() -> KineticBlockEntityRenderer::new)
+            .register();
+
+    public static final BlockEntityEntry<HorizontalChuteBlockEntity> CHUTE = REGISTRATE
+            .blockEntity("horizontal_chute", HorizontalChuteBlockEntity::new)
+            .validBlocks(BnbBlocks.HORIZONTAL_CHUTE)
+            .renderer(() -> HorizontalChuteRenderer::new)
             .register();
 
     public static void register() {
