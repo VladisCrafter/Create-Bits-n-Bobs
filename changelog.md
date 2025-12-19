@@ -91,3 +91,6 @@
   - Allowed chain cogwheels (that aren't flanged) to connect like normal cogwheels
   - Ru_ru localisation update
   - Fixed crash shalz found related to nixie tubes
+# 1.21.1-0.0.27
+- Changes:
+    - Allowed light force-on when interacting with an empty hand for all lights
