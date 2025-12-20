@@ -105,3 +105,5 @@
   - Fixed spanish translation being invalid
   - Allowed chairs to have inverse corners (pretty much appearing like seats)
   - Allowed light force-on when interacting with an empty hand for all lights
+# 1.20.1-0.0.29b
+- Fixed nametags on nixie tubes and boards

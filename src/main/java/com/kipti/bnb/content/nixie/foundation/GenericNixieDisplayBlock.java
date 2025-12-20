@@ -33,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.openjdk.nashorn.internal.parser.JSONParser;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -116,7 +117,7 @@ public class GenericNixieDisplayBlock extends DirectionalBlock implements IWrenc
         CompoundTag tag = stack.getTagElement("display");
         String tagElement = tag != null && tag.contains("Name", Tag.TAG_STRING) ? tag.getString("Name") : null;
 
-        Component component = tagElement == null ? Component.empty() : Component.literal(tagElement);
+        Component component = tagElement == null ? Component.empty() : Component.Serializer.fromJson(tagElement);
         @Nullable Component secondRowComponent = null;
 
         boolean forceFromTop = false;
