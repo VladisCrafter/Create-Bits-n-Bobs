@@ -20,7 +20,7 @@
             "item": "minecraft:glowstone_dust"
           },
           {
-            "tag": "c:glass_blocks"
+            "tag": "forge:glass"
           }
         ],
         "result": {

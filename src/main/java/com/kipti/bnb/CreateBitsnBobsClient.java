@@ -8,15 +8,27 @@ import net.createmod.catnip.config.ui.BaseConfigScreen;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.eventbus.EventBus;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class CreateBitsnBobsClient {
 
-    public static void setup(final ModContainer container) {
+    public static void setup(final FMLJavaModLoadingContext context) {
+        final IEventBus eventBus = context.getModEventBus();
+        eventBus.addListener(CreateBitsnBobsClient::onClientSetup);
+    }
+
+    private static void onClientSetup(final FMLLoadCompleteEvent event) {
+        event.enqueueWork(() -> CreateBitsnBobsClient.setup());
+    }
+
+    private static void setup() {
         PonderIndex.addPlugin(new BnbPonderPlugin());
 
         BnbPartialModels.register();

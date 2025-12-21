@@ -107,3 +107,8 @@
   - Allowed light force-on when interacting with an empty hand for all lights
 # 1.20.1-0.0.29b
 - Fixed nametags on nixie tubes and boards
+# 1.20.1-0.0.30
+- Changes:
+  - Turkish translation, thank you to @erdemarikaneskici
+  - Fixed concurrent modification exception crash, thanks to @MarioSMB for the solution
+  - Fixed glass tag in lightbulb recipe

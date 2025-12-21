@@ -55,7 +55,7 @@ public class CreateBitsnBobs {
         BnbPackets.registerPackets();
         BnbDecoBlocks.register();
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreateBitsnBobsClient.setup(context.getContainer()));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreateBitsnBobsClient.setup(context));
         BnbCreateStresses.register();
 
         BnbLangEntries.register();
